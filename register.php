@@ -13,6 +13,8 @@ if (isset($_SESSION['user_id'])) {
 <html>
 <head>
     <title>Register</title>
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/footer.css">
     <link rel="stylesheet" href="styles/auth.css">
 </head>
 <body>

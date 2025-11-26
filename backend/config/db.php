@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
 $dbname = "thoughtful_db";
-$username = "root";
-$password = "";
+$username = "benson.vorsah";
+$password = "KasVorsah1508$";
 $paystack_secret_key = "sk_test_03cd2f0ca15219e55adb3862a0e9c5d0f8e11e25";
 
 try{

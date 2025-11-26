@@ -11,6 +11,8 @@ $products = json_decode($response, true);
 <html>
 <head>
     <title>Thoughtful - Home</title>
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/footer.css">
     <link rel="stylesheet" href="styles/home.css">
 </head>
 

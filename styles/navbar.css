@@ -1,0 +1,35 @@
+.navbar {
+    width: 100%;
+    background: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-left .logo {
+    font-size: 26px;
+    font-weight: bold;
+    color: #6a0dad; /* Amethyst */
+    text-decoration: none;
+}
+
+.nav-right a {
+    color: #4b2e83; /* Dark lavender */
+    margin-left: 25px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+.nav-right a:hover {
+    color: #6a0dad;
+}
+
+.logout {
+    color: red !important;
+}
