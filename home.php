@@ -1,8 +1,8 @@
 <?php
 include "components/navbar.php";
 
-// Fetch products from backend API
-$api_url = "http://169.239.251.102:442//~benson.vorsah/thoughtful/backend/products/list.php";
+// FETCH PRODUCTS FROM BACKEND
+$api_url = "https://asclabs.ashesi.edu.gh/~USERNAME/thoughtful/backend/products/list.php";
 $response = file_get_contents($api_url);
 $products = json_decode($response, true);
 ?>
@@ -10,42 +10,59 @@ $products = json_decode($response, true);
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Thoughtful - Home</title>
+    <title>Thoughtful Gifts</title>
     <link rel="stylesheet" href="styles/navbar.css">
-    <link rel="stylesheet" href="styles/footer.css">
     <link rel="stylesheet" href="styles/home.css">
+    <link rel="stylesheet" href="styles/footer.css">
 </head>
 
 <body>
 
-<div class="hero">
-    <h1>Thoughtful Gifts</h1>
-    <p>Find the perfect gift for any budget, any occasion.</p>
-</div>
+<!-- HERO SECTION -->
+<section class="hero">
+    <h1>Find the Perfect Thoughtful Gift</h1>
+    <p>Gift ideas for every budget, style & occasion — made easy.</p>
 
-<div class="section-title">Popular Products</div>
+    <form class="search-bar">
+        <input type="text" placeholder="Search gifts, vendors or occasions…">
+        <button>Search</button>
+    </form>
+</section>
 
-<div class="product-grid">
+<!-- CATEGORY ROW -->
+<section class="categories">
+    <div class="cat-title">Browse Categories</div>
 
-    <?php if (!empty($products)): ?>
-        <?php foreach ($products as $item): ?>
-            <a href="product.php?id=<?php echo $item['id']; ?>" class="product-card">
+    <div class="cat-grid">
+        <div class="cat-card">Birthdays</div>
+        <div class="cat-card">Anniversary</div>
+        <div class="cat-card">Mother’s Day</div>
+        <div class="cat-card">Valentine's</div>
+        <div class="cat-card">Corporate</div>
+    </div>
+</section>
 
-                <div class="img-box">
-                    <img src="<?php echo $item['image']; ?>" alt="">
-                </div>
+<!-- PRODUCT GRID -->
+<section class="products">
+    <div class="section-title">Top Picks For You</div>
 
-                <h3><?php echo $item['name']; ?></h3>
+    <div class="product-grid">
+        <?php if (!empty($products)): ?>
+            <?php foreach ($products as $p): ?>
+                <a href="product.php?id=<?= $p['id'] ?>" class="product-card">
+                    <div class="img-box">
+                        <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
+                    </div>
 
-                <p class="price">GH₵ <?php echo number_format($item['price'], 2); ?></p>
-
-            </a>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p class="empty-msg">No products found.</p>
-    <?php endif; ?>
-
-</div>
+                    <h3><?= $p['name'] ?></h3>
+                    <p class="price">GH₵ <?= number_format($p['price'], 2) ?></p>
+                </a>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p class="empty">No products available.</p>
+        <?php endif; ?>
+    </div>
+</section>
 
 <?php include "components/footer.php"; ?>
 

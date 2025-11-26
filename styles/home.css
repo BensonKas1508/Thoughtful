@@ -1,67 +1,112 @@
-/* Hero Section */
+/* HERO SECTION */
 .hero {
-    background: linear-gradient(135deg, #e4d7fc, #ffffff);
+    background: linear-gradient(135deg, #F5F0FF, #FFFFFF);
     text-align: center;
-    padding: 60px 20px;
-    color: #4b2e83;
+    padding: 80px 20px;
 }
 
 .hero h1 {
-    font-size: 42px;
-    margin-bottom: 10px;
+    font-size: 45px;
+    color: #4b2e83;
 }
 
 .hero p {
+    margin-top: 8px;
     font-size: 18px;
     color: #555;
 }
 
-/* Section Title */
-.section-title {
-    font-size: 26px;
-    margin: 30px 20px;
-    font-weight: bold;
-    color: #4b2e83;
+.search-bar {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
 }
 
-/* Product Grid */
+.search-bar input {
+    width: 420px;
+    padding: 14px;
+    border-radius: 30px 0 0 30px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+.search-bar button {
+    padding: 14px 28px;
+    background: #6A0DAD;
+    color: white;
+    border: none;
+    border-radius: 0 30px 30px 0;
+    cursor: pointer;
+}
+
+/* CATEGORY GRID */
+.categories {
+    margin: 40px auto;
+    max-width: 1200px;
+}
+
+.cat-title {
+    font-size: 24px;
+    color: #4b2e83;
+    margin-bottom: 15px;
+}
+
+.cat-grid {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+}
+
+.cat-card {
+    background: #EDE7FF;
+    padding: 18px 35px;
+    border-radius: 30px;
+    font-weight: 500;
+    color: #4b2e83;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+/* PRODUCT GRID */
 .product-grid {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 25px;
-    padding: 20px;
 }
 
 .product-card {
     background: white;
-    border-radius: 12px;
-    padding: 15px;
+    border-radius: 15px;
     text-decoration: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 15px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
     transition: 0.2s;
 }
 
 .product-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 
 .product-card h3 {
-    font-size: 18px;
-    margin: 10px 0 0 0;
-    color: black;
+    color: #000;
+    font-size: 17px;
+    margin-top: 10px;
 }
 
-.product-card .price {
+.price {
+    color: #6A0DAD;
     font-weight: bold;
-    color: #6a0dad; /* Amethyst */
-    margin-top: 6px;
+    margin-top: 4px;
 }
 
 .img-box {
     width: 100%;
     height: 200px;
-    background: #f7f4ff;
+    background: #f6f2ff;
     border-radius: 10px;
     display: flex;
     justify-content: center;
@@ -69,14 +114,7 @@
 }
 
 .img-box img {
-    max-width: 90%;
     max-height: 90%;
-    border-radius: 8px;
-}
-
-.empty-msg {
-    text-align: center;
-    color: #666;
-    font-size: 18px;
-    margin-top: 40px;
+    max-width: 90%;
+    border-radius: 10px;
 }

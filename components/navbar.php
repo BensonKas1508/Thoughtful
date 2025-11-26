@@ -1,18 +1,28 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <nav class="navbar">
-    <div class="nav-left">
-        <a href="home.php" class="logo">Thoughtful</a>
-    </div>
+    <div class="nav-container">
 
-    <div class="nav-right">
-        <a href="home.php">Home</a>
-        <a href="categories.php">Categories</a>
-        <a href="cart.php">Cart</a>
+        <div class="nav-left">
+            <a class="logo" href="home.php">Thoughtful</a>
+        </div>
 
-        <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="profile.php">Hi, <?= $_SESSION['name'] ?></a>
-            <a href="logout.php" class="logout">Logout</a>
-        <?php else: ?>
-            <a href="login.php">Login</a>
-        <?php endif; ?>
+        <div class="nav-right">
+            <a href="home.php">Home</a>
+            <a href="categories.php">Categories</a>
+            <a href="cart.php">Cart</a>
+
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <span class="user">Hi, <?= $_SESSION['name'] ?></span>
+                <a class="logout" href="logout.php">Logout</a>
+            <?php else: ?>
+                <a class="login-btn" href="login.php">Login</a>
+            <?php endif; ?>
+        </div>
+
     </div>
 </nav>

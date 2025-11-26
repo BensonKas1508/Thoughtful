@@ -1,9 +1,31 @@
 .footer {
-    background: #f4eefc;
-    padding: 20px;
-    text-align: center;
+    background: #F4EDFF;
+    padding: 40px 20px;
     margin-top: 50px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    gap: 50px;
+    flex-wrap: wrap;
+}
+
+.footer .col h4 {
+    color: #6A0DAD;
+    margin-bottom: 10px;
+}
+
+.footer .col a {
+    display: block;
+    margin: 6px 0;
+    text-decoration: none;
+    color: #333;
+}
+
+.copy {
+    text-align: center;
+    margin-top: 30px;
     color: #4b2e83;
-    font-size: 15px;
-    border-top: 1px solid #e0d8f8;
 }
