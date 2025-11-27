@@ -119,3 +119,24 @@
     max-width: 90%;
     border-radius: 10px;
 }
+
+.products {
+    padding: 50px 20px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.categories {
+    padding: 40px 20px;
+}
+
+.hero {
+    padding: 80px 20px;
+    text-align: center;
+    background: linear-gradient(180deg, #F3ECFF, #FFFFFF);
+}
