@@ -22,6 +22,20 @@
     font-weight: bold;
     color: #6A0DAD;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+}
+
+.logo img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+
+.logo:hover {
+    opacity: 0.8;
 }
 
 .nav-right a {

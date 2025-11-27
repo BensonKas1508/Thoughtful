@@ -8,7 +8,10 @@ if (session_status() === PHP_SESSION_NONE) {
     <div class="nav-container">
 
         <div class="nav-left">
-            <a class="logo" href="home.php">Thoughtful</a>
+            < class="logo" href="home.php">
+                <img src="../assets/logo.png" alt="Thoughtful Logo">
+                <span>Thoughtful</span>
+            </a>
         </div>
 
         <div class="nav-right">

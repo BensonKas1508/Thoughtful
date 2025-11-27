@@ -2,7 +2,7 @@
 include "components/navbar.php";
 
 // FETCH PRODUCTS FROM BACKEND
-$api_url = "https://asclabs.ashesi.edu.gh/~USERNAME/thoughtful/backend/products/list.php";
+$api_url = "http://169.239.251.102:442/~benson.vorsah/thoughtful/backend/products/list.php";
 $response = file_get_contents($api_url);
 $products = json_decode($response, true);
 ?>
