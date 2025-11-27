@@ -34,11 +34,11 @@ $products = json_decode($response, true);
     <div class="cat-title">Browse Categories</div>
 
     <div class="cat-grid">
-        <div class="cat-card">Birthdays</div>
-        <div class="cat-card">Anniversary</div>
-        <div class="cat-card">Mother’s Day</div>
-        <div class="cat-card">Valentine's</div>
-        <div class="cat-card">Corporate</div>
+        <a href="products.php?category=Birthdays" class="cat-card">Birthdays</a>
+        <a href="products.php?category=Anniversary" class="cat-card">Anniversary</a>
+        <a href="products.php?category=Mothers Day" class="cat-card">Mother’s Day</a>
+        <a href="products.php?category=Valentines" class="cat-card">Valentine's</a>
+        <a href="products.php?category=Corporate" class="cat-card">Corporate</a>
     </div>
 </section>
 
@@ -47,8 +47,8 @@ $products = json_decode($response, true);
     <div class="section-title">Top Picks For You</div>
 
     <div class="product-grid">
-        <?php if (!empty($products)): ?>
-            <?php foreach ($products as $p): ?>
+        <?php if (!empty($products["products"])): ?>
+            <?php foreach ($products["products"] as $p): ?>
                 <a href="product.php?id=<?= $p['id'] ?>" class="product-card">
                     <div class="img-box">
                         <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
