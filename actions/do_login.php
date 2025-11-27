@@ -4,7 +4,7 @@ session_start();
 $email = $_POST['email'];
 $password = $_POST['password'];
 
-$api_url = "http://169.239.251.102:442//~benson.vorsah/thoughtful/backend/auth/login.php";
+$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/cart/add.php";
 
 $data = [
     "email" => $email,

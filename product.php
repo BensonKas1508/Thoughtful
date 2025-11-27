@@ -6,7 +6,7 @@ if (!isset($_GET['id'])) {
 $product_id = $_GET['id'];
 
 // API URL (UPDATE USERNAME!)
-$api_url = "http://169.239.251.102:442/~benson.vorsah/thoughtful/backend/products/details.php?id=" . $product_id;
+$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/products/details.php?id=1" . $product_id;
 
 // Fetch product details from backend API
 $response = file_get_contents($api_url);

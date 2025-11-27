@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$api_url = "http://169.239.251.102:442//~benson.vorsah/thoughtful/backend/auth/register.php";
+$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/auth/register.php";
 
 $data = [
     "name" => $_POST['name'],

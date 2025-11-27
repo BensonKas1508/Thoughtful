@@ -12,7 +12,8 @@ $product_id = $_POST['product_id'];
 $qty = $_POST['quantity'];
 
 // URL to backend (UPDATE USERNAME)
-$api_url = "http://169.239.251.102:442//~benson.vorsah/thoughtful/backend/cart/add.php";
+$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/cart/list.php
+";
 
 $data = [
     "user_id" => $user_id,

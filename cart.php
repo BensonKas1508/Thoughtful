@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 // API URL (UPDATE USERNAME)
-$api_url = "http://169.239.251.102:442//~benson.vorsah/thoughtful/backend/cart/list.php?user_id=" . $user_id;
+$api_url = "http://169.239.251.102:442/~benson.vorsah/thoughtful/backend/cart/list.php?user_id=" . $user_id;
 
 // Get cart items
 $response = file_get_contents($api_url);
