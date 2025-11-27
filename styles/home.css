@@ -43,6 +43,7 @@
 .categories {
     margin: 40px auto;
     max-width: 1200px;
+    padding: 40px 20px;
 }
 
 .cat-title {
