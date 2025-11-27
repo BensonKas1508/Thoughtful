@@ -14,8 +14,7 @@
     background: white;
     border-radius: 20px;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     overflow: hidden;
     animation: fadeIn 0.5s ease;
 }
@@ -41,6 +40,8 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
+    flex: 1;
+    min-width: 450px;
 }
 
 .auth-hero::before {
@@ -119,6 +120,8 @@
 /* RIGHT SIDE - FORM */
 .auth-container {
     padding: 60px 50px;
+    flex: 1;
+    min-width: 450px;
 }
 
 .auth-header {
@@ -292,9 +295,14 @@
 }
 
 /* RESPONSIVE DESIGN */
-@media (max-width: 768px) {
+@media (max-width: 968px) {
     .auth-wrapper {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+
+    .auth-hero,
+    .auth-container {
+        min-width: 100%;
     }
 
     .auth-hero {
