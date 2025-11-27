@@ -294,6 +294,26 @@
     text-decoration: underline;
 }
 
+/* FORGOT PASSWORD LINK */
+.forgot-password {
+    text-align: right;
+    margin-top: -8px;
+    margin-bottom: 8px;
+}
+
+.forgot-password a {
+    color: #7c3aed;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.forgot-password a:hover {
+    color: #6d28d9;
+    text-decoration: underline;
+}
+
 /* RESPONSIVE DESIGN */
 @media (max-width: 968px) {
     .auth-wrapper {
