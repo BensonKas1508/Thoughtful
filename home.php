@@ -20,31 +20,85 @@ $products = json_decode($response, true);
 
 <!-- HERO SECTION -->
 <section class="hero">
-    <h1>Find the Perfect Thoughtful Gift</h1>
-    <p>Gift ideas for every budget, style & occasion — made easy.</p>
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1>Find the Perfect Thoughtful Gift</h1>
+            <p>Gift ideas for every budget, style & occasion — made easy.</p>
 
-    <form class="search-bar">
-        <input type="text" placeholder="Search gifts, vendors or occasions…">
-        <button>Search</button>
-    </form>
+            <form class="search-bar">
+                <input type="text" placeholder="Search gifts, vendors or occasions…">
+                <button type="submit">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    Search
+                </button>
+            </form>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=600&h=600&fit=crop" alt="Gift boxes">
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="features">
+    <div class="feature-card">
+        <div class="feature-icon">🎁</div>
+        <h3>Curated Selection</h3>
+        <p>Handpicked gifts for every occasion</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🚚</div>
+        <h3>Fast Delivery</h3>
+        <p>Same-day delivery available</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">💝</div>
+        <h3>Gift Wrapping</h3>
+        <p>Beautiful packaging included</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">⭐</div>
+        <h3>Trusted Vendors</h3>
+        <p>Quality guaranteed products</p>
+    </div>
 </section>
 
 <!-- CATEGORY ROW -->
 <section class="categories">
-    <div class="cat-title">Browse Categories</div>
+    <div class="cat-title">Browse by Occasion</div>
 
     <div class="cat-grid">
-        <a href="products.php?category=Birthdays" class="cat-card">Birthdays</a>
-        <a href="products.php?category=Anniversary" class="cat-card">Anniversary</a>
-        <a href="products.php?category=Mothers Day" class="cat-card">Mother’s Day</a>
-        <a href="products.php?category=Valentines" class="cat-card">Valentine's</a>
-        <a href="products.php?category=Corporate" class="cat-card">Corporate</a>
+        <a href="products.php?category=Birthdays" class="cat-card">
+            <div class="cat-icon">🎂</div>
+            <span>Birthdays</span>
+        </a>
+        <a href="products.php?category=Anniversary" class="cat-card">
+            <div class="cat-icon">💑</div>
+            <span>Anniversary</span>
+        </a>
+        <a href="products.php?category=Mothers Day" class="cat-card">
+            <div class="cat-icon">🌹</div>
+            <span>Mother's Day</span>
+        </a>
+        <a href="products.php?category=Valentines" class="cat-card">
+            <div class="cat-icon">❤️</div>
+            <span>Valentine's</span>
+        </a>
+        <a href="products.php?category=Corporate" class="cat-card">
+            <div class="cat-icon">💼</div>
+            <span>Corporate</span>
+        </a>
     </div>
 </section>
 
 <!-- PRODUCT GRID -->
 <section class="products">
-    <div class="section-title">Top Picks For You</div>
+    <div class="section-header">
+        <h2 class="section-title">Top Picks For You</h2>
+        <a href="products.php" class="view-all">View All →</a>
+    </div>
 
     <div class="product-grid">
         <?php if (!empty($products["products"])): ?>
@@ -52,15 +106,28 @@ $products = json_decode($response, true);
                 <a href="product.php?id=<?= $p['id'] ?>" class="product-card">
                     <div class="img-box">
                         <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
+                        <div class="product-badge">New</div>
                     </div>
 
-                    <h3><?= $p['name'] ?></h3>
-                    <p class="price">GH₵ <?= number_format($p['price'], 2) ?></p>
+                    <div class="product-info">
+                        <h3><?= $p['name'] ?></h3>
+                        <p class="price">GH₵ <?= number_format($p['price'], 2) ?></p>
+                        <button class="quick-view">Quick View</button>
+                    </div>
                 </a>
             <?php endforeach; ?>
         <?php else: ?>
             <p class="empty">No products available.</p>
         <?php endif; ?>
+    </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2>Become a Vendor</h2>
+        <p>Share your unique gifts with thousands of customers</p>
+        <a href="register.php?role=vendor" class="cta-button">Start Selling</a>
     </div>
 </section>
 
