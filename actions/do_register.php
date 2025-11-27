@@ -24,6 +24,15 @@ $options = [
 $context  = stream_context_create($options);
 $response = file_get_contents($api_url, false, $context);
 
+// DEBUG OUTPUT (TEMPORARY)
+echo "<h1>DEBUG</h1>";
+echo "<pre>";
+echo "Response:\n";
+var_dump($response);
+echo "\nPOST DATA SENT:\n";
+var_dump($data);
+echo "</pre>";
+
 $result = json_decode($response, true);
 
 // Handle response
