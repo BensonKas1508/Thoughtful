@@ -1,56 +1,47 @@
 <?php
-require_once "../config/db.php";
-require_once "../helpers/response.php";
+header("Content-Type: application/json");
+include "../config/database.php";
 
-// Validate required fields
-if (!isset($_POST["name"], $_POST["email"], $_POST["password"])) {
-    jsonResponse(["status" => "error", "message" => "Missing required fields"], 400);
+$input = json_decode(file_get_contents("php://input"), true);
+
+$name = $input["name"];
+$email = $input["email"];
+$phone = $input["phone"];
+$password = $input["password"];
+
+if (!$name || !$email || !$password) {
+    echo json_encode(["status" => "error", "message" => "Missing fields"]);
+    exit;
 }
 
-$name = trim($_POST["name"]);
-$email = trim($_POST["email"]);
-$password = $_POST["password"];
-$phone = $_POST["phone"] ?? null;
-$role = $_POST["role"] ?? "customer";
+// Check if email exists
+$stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+$stmt->execute([$email]);
 
-// Validate role
-$allowed_roles = ["customer", "vendor"];
-if (!in_array($role, $allowed_roles)) {
-    $role = "customer";
+if ($stmt->rowCount() > 0) {
+    echo json_encode(["status" => "error", "message" => "Email already exists"]);
+    exit;
 }
-
-// Check if email already exists
-$check = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-$check->execute([$email]);
-if ($check->fetch()) {
-    jsonResponse(["status" => "error", "message" => "Email already registered"], 400);
-}
-
-// Hash password
-$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 // Insert user
-$stmt = $pdo->prepare("
-    INSERT INTO users (name, email, password_hash, role, phone)
-    VALUES (?, ?, ?, ?, ?)
+$hashed = password_hash($password, PASSWORD_BCRYPT);
+
+$insert = $conn->prepare("
+    INSERT INTO users (name, email, phone, password_hash, role)
+    VALUES (?, ?, ?, ?, 'customer')
 ");
-$stmt->execute([$name, $email, $password_hash, $role, $phone]);
 
-$user_id = $pdo->lastInsertId();
+$insert->execute([$name, $email, $phone, $hashed]);
 
-// If vendor role → create vendor profile
-if ($role === "vendor") {
+$user_id = $conn->lastInsertId();
 
-    $vendorStmt = $pdo->prepare("
-        INSERT INTO vendors (user_id, business_name)
-        VALUES (?, ?)
-    ");
-    $vendorStmt->execute([$user_id, $name . "'s Shop"]);
-}
-
-jsonResponse([
+echo json_encode([
     "status" => "success",
-    "message" => "Registration successful",
-    "user_id" => $user_id
+    "message" => "User registered",
+    "user" => [
+        "id" => $user_id,
+        "name" => $name,
+        "email" => $email,
+        "role" => "customer"
+    ]
 ]);
-?>
