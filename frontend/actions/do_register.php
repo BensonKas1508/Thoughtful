@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+file_put_contents("debug_register.txt", json_encode($_POST));
+
 // Backend register API URL
 $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/auth/register.php";
 
@@ -36,6 +38,9 @@ if ($response === false) {
     header("Location: ../register.php?error=Server error. Try again.");
     exit;
 }
+
+echo "<pre>RAW RESPONSE:\n$response\n</pre>";
+exit;
 
 $result = json_decode($response, true);
 
