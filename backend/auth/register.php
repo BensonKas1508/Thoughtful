@@ -1,29 +1,26 @@
 <?php
 header("Content-Type: application/json");
-include "../config/db.php";
+include "../config/database.php";
 
 $input = json_decode(file_get_contents("php://input"), true);
 
-$name = $input["name"];
-$email = $input["email"];
-$phone = $input["phone"];
-$password = $input["password"];
+$name = $input["name"] ?? null;
+$email = $input["email"] ?? null;
+$phone = $input["phone"] ?? null;
+$password = $input["password"] ?? null;
 
 if (!$name || !$email || !$password) {
     echo json_encode(["status" => "error", "message" => "Missing fields"]);
     exit;
 }
 
-// Check if email exists
 $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
 $stmt->execute([$email]);
-
 if ($stmt->rowCount() > 0) {
     echo json_encode(["status" => "error", "message" => "Email already exists"]);
     exit;
 }
 
-// Insert user
 $hashed = password_hash($password, PASSWORD_BCRYPT);
 
 $insert = $conn->prepare("
@@ -45,3 +42,4 @@ echo json_encode([
         "role" => "customer"
     ]
 ]);
+?>
