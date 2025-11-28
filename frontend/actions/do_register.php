@@ -30,7 +30,7 @@ $result = json_decode($response, true);
 // Handle response
 if (!$result || $result["status"] !== "success") {
     $msg = isset($result["message"]) ? $result["message"] : "Registration failed.";
-    header("Location: ../register.php?error=" . urlencode($msg));
+    header("Location: /~benson.vorsah/register.php?error=" . urlencode($msg));
     exit;
 }
 
@@ -40,5 +40,5 @@ $_SESSION["user_name"] = $result["user"]["name"];
 $_SESSION["role"] = $result["user"]["role"];
 
 // Redirect to homepage
-header("Location: ../home.php");
+header("Location: /~benson.vorsah/home.php");
 exit;
