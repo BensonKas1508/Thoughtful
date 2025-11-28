@@ -3,7 +3,7 @@ session_start();
 
 // If user not logged in → send to login page
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: do_login.php");
     exit;
 }
 
@@ -34,5 +34,5 @@ $options = [
 $response = file_get_contents($api_url, false, stream_context_create($options));
 
 // Redirect to cart
-header("Location: cart.php");
+header("Location: ~benson.vorsah/cart.php");
 exit;
