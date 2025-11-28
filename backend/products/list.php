@@ -11,24 +11,27 @@ $page = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
 $limit = 12;
 $offset = ($page - 1) * $limit;
 
-// BASE QUERY
-$sql = "
-    SELECT 
-        p.id,
-        p.name,
-        p.description,
-        p.price,
-        p.stock,
-        p.status,
-        p.delivery_type,
-        p.created_at,
-        v.business_name,
-        c.name AS category_name
+$category = isset($_GET['category']) ? intval($_GET['category']) : 0;
+
+// Base query
+$query = "
+    SELECT p.*, vendors.business_name, categories.name AS category_name,
+        (SELECT url FROM product_images WHERE product_id = p.id LIMIT 1) AS image
     FROM products p
-    JOIN vendors v ON p.vendor_id = v.id
-    LEFT JOIN categories c ON p.category_id = c.id
+    LEFT JOIN vendors ON vendors.id = p.vendor_id
+    LEFT JOIN categories ON categories.id = p.category_id
     WHERE p.status = 'active'
 ";
+
+if ($category > 0) {
+    $query .= " AND p.category_id = :cat";
+}
+
+$query .= " ORDER BY p.id DESC LIMIT :offset, :limit";
+
+if ($category > 0) {
+    $stmt->bindValue(':cat', $category, PDO::PARAM_INT);
+}
 
 $params = [];
 
