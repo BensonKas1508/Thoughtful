@@ -108,6 +108,16 @@ if (isset($_SESSION['user_id'])) {
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="password">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"/>
+                        </svg>
+                        <input type="password" id="password" name="confirm_password" placeholder="Minimum 8 characters" minlength="8" required>
+                    </div>
+                </div>
+
                 <button type="submit" class="auth-button">
                     Create Account
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">

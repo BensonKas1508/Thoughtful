@@ -12,6 +12,11 @@ $data = [
     "password" => $_POST['password']
 ];
 
+if ($_POST['password'] !== $_POST['confirm_password']) {
+    header("Location: /~benson.vorsah/register.php?error=" . urlencode("Passwords do not match"));
+    exit;
+}
+
 // Send to backend
 $options = [
     "http" => [
