@@ -1,52 +1,52 @@
 <?php
 session_start();
-include "components/navbar.php";
 
-// If logged in → redirect
-if (isset($_SESSION['user_id'])) {
-    header("Location: home.php");
+// backend API URL
+$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/auth/register.php";
+
+// Collect form data
+$data = [
+    "name" => $_POST['name'],
+    "email" => $_POST['email'],
+    "phone" => $_POST['phone'],
+    "password" => $_POST['password']
+];
+
+// Send to backend
+$options = [
+    "http" => [
+        "header"  => "Content-Type: application/json\r\n",
+        "method"  => "POST",
+        "content" => json_encode($data)
+    ]
+];
+
+$context  = stream_context_create($options);
+$response = file_get_contents($api_url, false, $context);
+
+// DEBUG OUTPUT (TEMPORARY)
+echo "<h1>DEBUG</h1>";
+echo "<pre>";
+echo "Response:\n";
+var_dump($response);
+echo "\nPOST DATA SENT:\n";
+var_dump($data);
+echo "</pre>";
+
+$result = json_decode($response, true);
+
+// Handle response
+if (!$result || $result["status"] !== "success") {
+    $msg = isset($result["message"]) ? $result["message"] : "Registration failed.";
+    header("Location: ../register.php?error=" . urlencode($msg));
     exit;
 }
-?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register</title>
-    <link rel="stylesheet" href="styles/navbar.css">
-    <link rel="stylesheet" href="styles/footer.css">
-    <link rel="stylesheet" href="styles/auth.css">
-</head>
-<body>
+// Success → log user in
+$_SESSION["user_id"] = $result["user"]["id"];
+$_SESSION["user_name"] = $result["user"]["name"];
+$_SESSION["role"] = $result["user"]["role"];
 
-<div class="auth-container">
-    <h2>Create Account</h2>
-
-    <?php if (isset($_GET['error'])): ?>
-        <p style="color:red;"><?= htmlspecialchars($_GET['error']) ?></p>
-    <?php endif; ?>
-
-    <form action="actions/do_register.php" method="POST">
-
-        <label>Full Name</label>
-        <input type="text" name="name" required>
-
-        <label>Email</label>
-        <input type="email" name="email" required>
-
-        <label>Phone Number</label>
-        <input type="text" name="phone" required>
-
-        <label>Password</label>
-        <input type="password" name="password" required>
-
-        <button type="submit">Register</button>
-
-        <div class="auth-link">
-            <p>Already have an account? <a href="login.php">Login</a></p>
-        </div>
-    </form>
-</div>
-
-</body>
-</html>
+// Redirect to homepage
+header("Location: ../home.php");
+exit;
