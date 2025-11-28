@@ -17,7 +17,11 @@ if (!$product || ($product["status"] ?? "error") === "error") {
 }
 
 include "components/navbar.php";
+
+$cat_id = $_GET['cat'] ?? 0;
+
 ?>
+
 
 <!DOCTYPE html>
 <html>

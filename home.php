@@ -70,23 +70,23 @@ $products = json_decode($response, true);
     <div class="cat-title">Browse by Occasion</div>
 
     <div class="cat-grid">
-        <a href="products.php?category=Birthdays" class="cat-card">
+        <a href="products.php?cat=1" class="cat-card">
             <div class="cat-icon">🎂</div>
             <span>Birthdays</span>
         </a>
-        <a href="products.php?category=Anniversary" class="cat-card">
+        <a href="products.php?cat=2" class="cat-card">
             <div class="cat-icon">💑</div>
             <span>Anniversary</span>
         </a>
-        <a href="products.php?category=Mothers Day" class="cat-card">
+        <a href="products.php?cat=3" class="cat-card">
             <div class="cat-icon">🌹</div>
             <span>Mother's Day</span>
         </a>
-        <a href="products.php?category=Valentines" class="cat-card">
+        <a href="products.php?cat=5" class="cat-card">
             <div class="cat-icon">❤️</div>
-            <span>Valentine's</span>
+            <span>Valentine's Day</span>
         </a>
-        <a href="products.php?category=Corporate" class="cat-card">
+        <a href="products.php?cat=5" class="cat-card">
             <div class="cat-icon">💼</div>
             <span>Corporate</span>
         </a>
