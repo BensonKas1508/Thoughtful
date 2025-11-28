@@ -1,40 +1,59 @@
 <?php
-include "components/navbar.php";
+// Get product ID from URL
+if (!isset($_GET['id'])) {
+    die("Product not found.");
+}
+$product_id = (int) $_GET['id'];
 
-$cat_id = $_GET['cat'] ?? 0;
+// Backend API URL
+$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/products/details.php?id=" . $product_id;
 
-$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/products/list.php?category=$cat_id";
+// Fetch product details
 $response = file_get_contents($api_url);
-$data = json_decode($response, true);
+$product = json_decode($response, true);
 
-$products = $data["products"] ?? [];
+if (!$product || ($product["status"] ?? "error") === "error") {
+    die("Product not available.");
+}
+
+include "components/navbar.php";
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Products</title>
+    <title><?php echo $product['name']; ?></title>
     <link rel="stylesheet" href="styles/navbar.css">
-    <link rel="stylesheet" href="styles/home.css">
     <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/product.css">
 </head>
+
 <body>
 
-<section class="products">
-    <div class="section-title">Products</div>
+<div class="product-page">
 
-    <div class="product-grid">
-        <?php foreach ($products as $p): ?>
-            <a href="product.php?id=<?= $p['id'] ?>" class="product-card">
-                <div class="img-box">
-                    <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
-                </div>
-                <h3><?= $p['name'] ?></h3>
-                <p class="price">GH₵ <?= number_format($p['price'], 2) ?></p>
-            </a>
-        <?php endforeach; ?>
+    <div class="product-image">
+        <img src="<?php echo $product['image']; ?>" alt="">
     </div>
-</section>
+
+    <div class="product-details">
+        <h1><?php echo $product['name']; ?></h1>
+
+        <p class="price">GH₵ <?php echo number_format($product['price'], 2); ?></p>
+
+        <p><?php echo $product['description']; ?></p>
+
+        <form action="actions/add_to_cart.php" method="POST">
+            <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+
+            <label>Quantity:</label>
+            <input type="number" name="quantity" value="1" min="1">
+
+            <button type="submit" class="btn-add">Add to Cart</button>
+        </form>
+    </div>
+
+</div>
 
 <?php include "components/footer.php"; ?>
 </body>
