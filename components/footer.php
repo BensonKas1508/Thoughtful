@@ -39,18 +39,18 @@
       <div class="footer-column">
         <h3>Shop</h3>
         <ul>
-          <li><a href="/products.php">All Gifts</a></li>
-          <li><a href="/occasions">By Occasion</a></li>
-          <li><a href="/budget">By Budget</a></li>
-          <li><a href="/vendors">Vendors</a></li>
-          <li><a href="/categories.php">Categories</a></li>
+          <li><a href="http://169.239.251.102:442/~benson.vorsah/products.php">All Gifts</a></li>
+          <li><a href="http://169.239.251.102:442/~benson.vorsah/occasions">By Occasion</a></li>
+          <li><a href="http://169.239.251.102:442/~benson.vorsah/budget">By Budget</a></li>
+          <li><a href="http://169.239.251.102:442/~benson.vorsah/vendors">Vendors</a></li>
+          <li><a href="http://169.239.251.102:442/~benson.vorsah/categories.php">Categories</a></li>
         </ul>
       </div>
       
       <div class="footer-column">
         <h3>Help</h3>
         <ul>
-          <li><a href="/contact.php">Contact Us</a></li>
+          <li><a href="http://169.239.251.102:442/~benson.vorsah/contact.php">Contact Us</a></li>
           <li><a href="/faq">FAQ</a></li>
           <li><a href="/shipping">Shipping Info</a></li>
           <li><a href="/returns">Returns</a></li>
