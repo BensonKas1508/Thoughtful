@@ -303,6 +303,39 @@ body {
     box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
 }
 
+.filter-section {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #f8f5ff;
+    border-radius: 15px;
+}
+
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.filter-form input,
+.filter-form select {
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid #d4c7f7;
+    flex: 1;
+    min-width: 180px;
+    font-size: 15px;
+}
+
+.filter-form button {
+    background: #6A0DAD;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
 /* RESPONSIVE DESIGN */
 @media (max-width: 968px) {
     .hero-content h1 {

@@ -3,9 +3,12 @@ require_once "../config/db.php";
 require_once "../helpers/response.php";
 
 // Query parameters
-$search   = $_GET["search"]   ?? null;
-$category = $_GET["category"] ?? null;
-$vendor   = $_GET["vendor"]   ?? null;
+$search      = $_GET["search"]      ?? null;
+$category    = $_GET["category"]    ?? null;
+$vendor      = $_GET["vendor"]      ?? null;
+$price_min   = $_GET["price_min"]   ?? null;
+$price_max   = $_GET["price_max"]   ?? null;
+$delivery    = $_GET["delivery"]    ?? null;
 
 $page  = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
 $limit = 12;
@@ -48,6 +51,21 @@ if (!empty($vendor)) {
     $params[':vendor'] = $vendor;
 }
 
+if (!empty($price_min)) {
+    $sql .= " AND p.price >= :min";
+    $params[':min'] = $price_min;
+}
+
+if (!empty($price_max)) {
+    $sql .= " AND p.price <= :max";
+    $params[':max'] = $price_max;
+}
+
+if (!empty($delivery)) {
+    $sql .= " AND p.delivery_type = :delivery";
+    $params[':delivery'] = $delivery;
+}
+
 // Pagination
 $sql .= " ORDER BY p.id DESC LIMIT :limit OFFSET :offset";
 
@@ -69,11 +87,10 @@ foreach ($products as $key => $product) {
     $imgQuery = $pdo->prepare("SELECT url FROM product_images WHERE product_id = ? LIMIT 1");
     $imgQuery->execute([$product['id']]);
     $image = $imgQuery->fetch();
-
     $products[$key]["image"] = $image ? $image["url"] : null;
 }
 
-// Send JSON response
+// Response
 jsonResponse([
     "status"   => "success",
     "page"     => $page,

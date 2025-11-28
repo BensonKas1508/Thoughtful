@@ -39,6 +39,60 @@ $products = $data["products"] ?? [];
     </div>
 </section>
 
+<!-- FILTER BAR -->
+<section class="filter-section">
+    <form method="GET" class="filter-form">
+
+        <!-- Search -->
+        <input 
+            type="text" 
+            name="search" 
+            placeholder="Search gifts…" 
+            value="<?= $_GET['search'] ?? '' ?>"
+        >
+
+        <!-- Category -->
+        <select name="category">
+            <option value="">All Categories</option>
+            <?php foreach ($categories as $cat): ?>
+                <option 
+                    value="<?= $cat['id'] ?>"
+                    <?= isset($_GET['category']) && $_GET['category'] == $cat['id'] ? 'selected' : '' ?>
+                >
+                    <?= htmlspecialchars($cat['name']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <!-- Price Min -->
+        <input 
+            type="number" 
+            name="price_min" 
+            placeholder="Min Price" 
+            value="<?= $_GET['price_min'] ?? '' ?>"
+        >
+
+        <!-- Price Max -->
+        <input 
+            type="number" 
+            name="price_max" 
+            placeholder="Max Price" 
+            value="<?= $_GET['price_max'] ?? '' ?>"
+        >
+
+        <!-- Delivery -->
+        <select name="delivery">
+            <option value="">Delivery Type</option>
+            <option value="pickup">Pickup</option>
+            <option value="delivery">Delivery</option>
+            <option value="both">Both</option>
+        </select>
+
+        <button type="submit">Apply Filters</button>
+    </form>
+</section>
+
+
 <?php include "components/footer.php"; ?>
 </body>
 </html>
