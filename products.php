@@ -23,22 +23,6 @@ $products = $data["products"] ?? [];
 </head>
 <body>
 
-<section class="products">
-    <div class="section-title">Products</div>
-
-    <div class="product-grid">
-        <?php foreach ($products as $p): ?>
-            <a href="product.php?id=<?= $p['id'] ?>" class="product-card">
-                <div class="img-box">
-                    <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
-                </div>
-                <h3><?= $p['name'] ?></h3>
-                <p class="price">GH₵ <?= number_format($p['price'], 2) ?></p>
-            </a>
-        <?php endforeach; ?>
-    </div>
-</section>
-
 <!-- FILTER BAR -->
 <section class="filter-section">
     <form method="GET" class="filter-form">
@@ -92,7 +76,23 @@ $products = $data["products"] ?? [];
     </form>
 </section>
 
+<section class="products">
+    <div class="section-title">Products</div>
+
+    <div class="product-grid">
+        <?php foreach ($products as $p): ?>
+            <a href="product.php?id=<?= $p['id'] ?>" class="product-card">
+                <div class="img-box">
+                    <img src="<?= $p['image'] ?>" alt="<?= $p['name'] ?>">
+                </div>
+                <h3><?= $p['name'] ?></h3>
+                <p class="price">GH₵ <?= number_format($p['price'], 2) ?></p>
+            </a>
+        <?php endforeach; ?>
+    </div>
+</section>
 
 <?php include "components/footer.php"; ?>
+
 </body>
 </html>
