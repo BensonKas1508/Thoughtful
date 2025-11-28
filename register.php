@@ -65,7 +65,7 @@ if (isset($_SESSION['user_id'])) {
                 </div>
             <?php endif; ?>
 
-            <form action="actions/do_register.php" method="POST" class="auth-form">
+            <form action="frontend/actions/do_register.php" method="POST" class="auth-form">
 
                 <div class="form-group">
                     <label for="name">Full Name</label>
