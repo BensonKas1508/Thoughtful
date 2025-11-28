@@ -16,7 +16,7 @@ $products = $data["products"] ?? [];
     <title>Products</title>
     <link rel="stylesheet" href="styles/global.css">
     <link rel="stylesheet" href="styles/navbar.css">
-    <link rel="stylesheet" href="styles/home.css">
+    <link rel="stylesheet" href="styles/products.css">
     <link rel="stylesheet" href="styles/footer.css">
     <link>
 </head>
