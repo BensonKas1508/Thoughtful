@@ -34,5 +34,5 @@ $options = [
 $response = file_get_contents($api_url, false, stream_context_create($options));
 
 // Redirect to cart
-header("Location: ~benson.vorsah/cart.php");
+header("Location: cart.php");
 exit;
