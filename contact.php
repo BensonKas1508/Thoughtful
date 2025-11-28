@@ -13,6 +13,8 @@
   
 </head>
 <body>
+  <?php include "components/navbar.php"; ?>
+
   <!-- Header -->
   <header>
     <div class="header-container">
@@ -146,4 +148,7 @@
     </div>
   </section>
 </body>
+
+<?php include "components/footer.php"; ?>
+
 </html>

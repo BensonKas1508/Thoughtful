@@ -59,7 +59,7 @@ $category_icons = [
                         $categoryName = htmlspecialchars($c['name']);
                         $icon = $category_icons[$categoryName] ?? $category_icons['Default'];
                     ?>
-                    <a href="products.php?cat=<?= $c['id'] ?>" class="category-card">
+                    <a href="category.php?cat=<?= $c['id'] ?>" class="category-card">
                         <div class="category-icon-wrapper">
                             <div class="category-icon"><?= $icon ?></div>
                         </div>

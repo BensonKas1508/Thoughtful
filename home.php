@@ -67,32 +67,25 @@ $products = json_decode($response, true);
 </section>
 
 <!-- CATEGORY ROW -->
+<?php
+$cat_api = "http://169.239.251.102:442/~benson.vorsah/backend/categories/list.php";
+$cat_json = file_get_contents($cat_api);
+$cat_data = json_decode($cat_json, true);
+$categories = $cat_data["categories"];
+?>
+
 <section class="categories">
     <div class="cat-title">Browse by Occasion</div>
 
     <div class="cat-grid">
-        <a href="products.php?cat=1" class="cat-card">
-            <div class="cat-icon">🎂</div>
-            <span>Birthdays</span>
-        </a>
-        <a href="products.php?cat=2" class="cat-card">
-            <div class="cat-icon">💑</div>
-            <span>Anniversary</span>
-        </a>
-        <a href="products.php?cat=3" class="cat-card">
-            <div class="cat-icon">🌹</div>
-            <span>Mother's Day</span>
-        </a>
-        <a href="products.php?cat=5" class="cat-card">
-            <div class="cat-icon">❤️</div>
-            <span>Valentine's Day</span>
-        </a>
-        <a href="products.php?cat=5" class="cat-card">
-            <div class="cat-icon">💼</div>
-            <span>Corporate</span>
-        </a>
+        <?php foreach ($categories as $cat): ?>
+            <a href="category.php?id=<?= $cat['id'] ?>" class="cat-card">
+                <div class="category-name"><?= $cat['name'] ?></div>
+            </a>
+        <?php endforeach; ?>
     </div>
 </section>
+
 
 <!-- PRODUCT GRID -->
 <section class="products">

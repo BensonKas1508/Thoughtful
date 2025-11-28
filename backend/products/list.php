@@ -1,83 +1,35 @@
 <?php
-require_once "../config/db.php";
-require_once "../helpers/response.php";
+header("Content-Type: application/json");
+include "../config/db.php";
 
-// Query parameters
-$search   = $_GET["search"]   ?? null;
 $category = $_GET["category"] ?? null;
-$vendor   = $_GET["vendor"]   ?? null;
 
-$page  = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
-$limit = 12;
-$offset = ($page - 1) * $limit;
-
-// Base query
 $sql = "
-    SELECT 
-        p.id,
-        p.name,
-        p.description,
-        p.price,
-        p.stock,
-        p.status,
-        p.delivery_type,
-        p.created_at,
+    SELECT p.*, 
         v.business_name,
-        c.name AS category_name
+        c.name AS category_name,
+        (SELECT url FROM product_images WHERE product_id = p.id LIMIT 1) AS image
     FROM products p
-    JOIN vendors v ON p.vendor_id = v.id
-    LEFT JOIN categories c ON p.category_id = c.id
+    LEFT JOIN vendors v ON v.id = p.vendor_id
+    LEFT JOIN categories c ON c.id = p.category_id
     WHERE p.status = 'active'
 ";
 
 $params = [];
 
-// Filters
-if (!empty($search)) {
-    $sql .= " AND p.name LIKE :search";
-    $params[':search'] = '%' . $search . '%';
+// filter by category
+if ($category) {
+    $sql .= " AND p.category_id = :cat";
+    $params[':cat'] = $category;
 }
 
-if (!empty($category)) {
-    $sql .= " AND p.category_id = :category";
-    $params[':category'] = $category;
-}
+$sql .= " ORDER BY p.id DESC";
 
-if (!empty($vendor)) {
-    $sql .= " AND p.vendor_id = :vendor";
-    $params[':vendor'] = $vendor;
-}
+$stmt = $conn->prepare($sql);
+$stmt->execute($params);
+$items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Pagination
-$sql .= " ORDER BY p.id DESC LIMIT :limit OFFSET :offset";
-
-$stmt = $pdo->prepare($sql);
-
-// Bind dynamic values
-foreach ($params as $key => $value) {
-    $stmt->bindValue($key, $value);
-}
-
-$stmt->bindValue(":limit", (int)$limit, PDO::PARAM_INT);
-$stmt->bindValue(":offset", (int)$offset, PDO::PARAM_INT);
-
-$stmt->execute();
-$products = $stmt->fetchAll();
-
-// Attach product images
-foreach ($products as $key => $product) {
-    $imgQuery = $pdo->prepare("SELECT url FROM product_images WHERE product_id = ? LIMIT 1");
-    $imgQuery->execute([$product['id']]);
-    $image = $imgQuery->fetch();
-
-    $products[$key]["image"] = $image ? $image["url"] : null;
-}
-
-// Send JSON response
-jsonResponse([
-    "status"   => "success",
-    "page"     => $page,
-    "results"  => count($products),
-    "products" => $products
+echo json_encode([
+    "status" => "success",
+    "products" => $items
 ]);
-?>
