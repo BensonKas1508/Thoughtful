@@ -13,6 +13,7 @@ if (isset($_SESSION['user_id'])) {
 <html>
 <head>
     <title>Login - Thoughtful</title>
+    <link rel="stylesheet" href="styles/global.css">
     <link rel="stylesheet" href="styles/navbar.css">
     <link rel="stylesheet" href="styles/footer.css">
     <link rel="stylesheet" href="styles/auth.css">

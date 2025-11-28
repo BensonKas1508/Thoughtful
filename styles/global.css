@@ -1,0 +1,20 @@
+:root {
+    --primary: #9B5DE5;      /* Amethyst Purple */
+    --lavender: #E6DAF8;     /* Soft Lavender */
+    --black: #222;
+    --white: #fff;
+    --gray: #727272;
+    --radius: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fafafa;
+}
