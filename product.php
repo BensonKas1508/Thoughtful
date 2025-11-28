@@ -29,7 +29,7 @@ $cat_id = $_GET['cat'] ?? 0;
     <title><?php echo $product['name']; ?></title>
     <link rel="stylesheet" href="styles/navbar.css">
     <link rel="stylesheet" href="styles/footer.css">
-    <link rel="stylesheet" href="styles/product.css">
+    <link rel="stylesheet" href="styles/product_details.css">
 </head>
 
 <body>
