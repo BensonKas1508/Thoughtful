@@ -48,8 +48,8 @@ $cat_id = $_GET['cat'] ?? 0;
 
         <p><?php echo $product['description']; ?></p>
 
-        <form action="actions/add_to_cart.php" method="POST">
-            <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+        <form action="frontend/actions/add_to_cart.php" method="POST">
+            <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
 
             <label>Quantity:</label>
             <input type="number" name="quantity" value="1" min="1">
