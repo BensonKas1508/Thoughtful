@@ -40,6 +40,24 @@ if (!$result || $result["status"] !== "success") {
 
 // SUCCESS: set session
 $_SESSION["user_id"]   = $result["user"]["id"];
+
+// after successful login and $_SESSION['user_id'] set:
+if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $pid => $entry) {
+        $payload = [
+            "user_id" => $_SESSION['user_id'],
+            "product_id" => (int)$entry['product_id'],
+            "quantity" => (int)$entry['quantity']
+        ];
+        $api = "http://169.239.251.102:442/~benson.vorsah/backend/cart/add.php";
+        $opts = ["http"=>["header"=>"Content-Type: application/json\r\n","method"=>"POST","content"=>json_encode($payload),"ignore_errors"=>true]];
+        $ctx = stream_context_create($opts);
+        @file_get_contents($api, false, $ctx);
+    }
+    // clear session cart after merging
+    unset($_SESSION['cart']);
+}
+
 $_SESSION["user_name"] = $result["user"]["name"];
 $_SESSION["role"]      = $result["user"]["role"];
 

@@ -1,84 +1,55 @@
 <?php
+header("Content-Type: application/json");
 require_once "../config/db.php";
-require_once "../helpers/response.php";
 
-// VALIDATE INPUT
-if (!isset($_POST["user_id"]) || !isset($_POST["product_id"]) || !isset($_POST["quantity"])) {
-    jsonResponse(["status" => "error", "message" => "Missing required fields"], 400);
+// Accept JSON body
+$input = json_decode(file_get_contents("php://input"), true);
+
+$user_id = $input['user_id'] ?? null;
+$product_id = (int) ($input['product_id'] ?? 0);
+$quantity = max(1, (int) ($input['quantity'] ?? 1));
+
+if (!$user_id || !$product_id) {
+    echo json_encode(['status'=>'error','message'=>'user_id and product_id required']);
+    exit;
 }
 
-$user_id = (int) $_POST["user_id"];
-$product_id = (int) $_POST["product_id"];
-$quantity = (int) $_POST["quantity"];
+// check existing cart for user
+try {
+    // find user cart
+    $stmt = $pdo->prepare("SELECT id FROM carts WHERE user_id = ? LIMIT 1");
+    $stmt->execute([$user_id]);
+    $cart = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($quantity <= 0) {
-    jsonResponse(["status" => "error", "message" => "Quantity must be at least 1"], 400);
-}
-
-// 1. VERIFY PRODUCT
-$productQuery = $pdo->prepare("SELECT id, price, stock FROM products WHERE id = ?");
-$productQuery->execute([$product_id]);
-$product = $productQuery->fetch();
-
-if (!$product) {
-    jsonResponse(["status" => "error", "message" => "Product not found"], 404);
-}
-
-if ($product["stock"] < $quantity) {
-    jsonResponse(["status" => "error", "message" => "Not enough stock"], 400);
-}
-
-// 2. GET OR CREATE CART
-$cartQuery = $pdo->prepare("SELECT id FROM carts WHERE user_id = ?");
-$cartQuery->execute([$user_id]);
-$cart = $cartQuery->fetch();
-
-if (!$cart) {
-    // Create new cart
-    $createCart = $pdo->prepare("INSERT INTO carts (user_id) VALUES (?)");
-    $createCart->execute([$user_id]);
-    $cart_id = $pdo->lastInsertId();
-} else {
-    $cart_id = $cart["id"];
-}
-
-// 3. CHECK IF ITEM EXISTS IN CART
-$itemQuery = $pdo->prepare("
-    SELECT id, quantity 
-    FROM cart_items 
-    WHERE cart_id = ? AND product_id = ?
-");
-$itemQuery->execute([$cart_id, $product_id]);
-$existingItem = $itemQuery->fetch();
-
-if ($existingItem) {
-    // Update quantity
-    $newQty = $existingItem["quantity"] + $quantity;
-
-    if ($newQty > $product["stock"]) {
-        jsonResponse(["status" => "error", "message" => "Exceeds available stock"], 400);
+    if (!$cart) {
+        $ins = $pdo->prepare("INSERT INTO carts (user_id, created_at) VALUES (?, NOW())");
+        $ins->execute([$user_id]);
+        $cart_id = $pdo->lastInsertId();
+    } else {
+        $cart_id = $cart['id'];
     }
 
-    $updateItem = $pdo->prepare("
-        UPDATE cart_items 
-        SET quantity = ? 
-        WHERE id = ?
-    ");
-    $updateItem->execute([$newQty, $existingItem["id"]]);
+    // check if product already in cart
+    $ci = $pdo->prepare("SELECT id, quantity FROM cart_items WHERE cart_id = ? AND product_id = ? LIMIT 1");
+    $ci->execute([$cart_id, $product_id]);
+    $existing = $ci->fetch(PDO::FETCH_ASSOC);
 
-} else {
-    // Add new item with price captured at this time
-    $addItem = $pdo->prepare("
-        INSERT INTO cart_items (cart_id, product_id, quantity, price_at_add)
-        VALUES (?, ?, ?, ?)
-    ");
-    $addItem->execute([$cart_id, $product_id, $quantity, $product["price"]]);
+    if ($existing) {
+        $newQty = $existing['quantity'] + $quantity;
+        $u = $pdo->prepare("UPDATE cart_items SET quantity = ? WHERE id = ?");
+        $u->execute([$newQty, $existing['id']]);
+    } else {
+        $i = $pdo->prepare("INSERT INTO cart_items (cart_id, product_id, quantity, price_at_add, created_at) VALUES (?, ?, ?, ?, NOW())");
+        // get current price
+        $pstmt = $pdo->prepare("SELECT price FROM products WHERE id = ? LIMIT 1");
+        $pstmt->execute([$product_id]);
+        $price = $pstmt->fetchColumn() ?: 0;
+        $i->execute([$cart_id, $product_id, $quantity, $price]);
+    }
+
+    echo json_encode(['status'=>'success','message'=>'Added to cart']);
+    exit;
+} catch (Exception $e) {
+    echo json_encode(['status'=>'error','message'=>$e->getMessage()]);
+    exit;
 }
-
-// 4. SUCCESS
-jsonResponse([
-    "status" => "success",
-    "message" => "Item added to cart",
-    "cart_id" => $cart_id
-]);
-?>
