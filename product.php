@@ -17,9 +17,6 @@ if (!$product || ($product["status"] ?? "error") === "error") {
 }
 
 include "components/navbar.php";
-
-$cat_id = $_GET['cat'] ?? 0;
-
 ?>
 
 
@@ -48,7 +45,7 @@ $cat_id = $_GET['cat'] ?? 0;
 
         <p><?php echo $product['description']; ?></p>
 
-        <form action="frontend/actions/add_to_cart.php" method="POST">
+        <form action="actions/add_to_cart.php" method="POST">
             <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
 
             <label>Quantity:</label>

@@ -9,7 +9,7 @@ if (!isset($_GET['cat'])) {
 $cat_id = intval($_GET['cat']);
 
 // Fetch category products
-$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/products/list.php?category=" . $cat_id;
+$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/products/list.php?cat=" . $cat_id;
 $response = file_get_contents($api_url);
 $data = json_decode($response, true);
 

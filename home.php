@@ -80,7 +80,7 @@ $categories = $cat_data["categories"];
 
     <div class="cat-grid">
         <?php foreach ($categories as $cat): ?>
-            <a href="category.php?id=<?= $cat['id'] ?>" class="cat-card">
+            <a href="products.php?cat=<?= $cat['id'] ?>" class="cat-card">
                 <div class="category-name"><?= $cat['name'] ?></div>
             </a>
         <?php endforeach; ?>
