@@ -1,29 +1,43 @@
 <?php
-// Get product ID from URL
-if (!isset($_GET['id'])) {
+// Validate product ID
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die("Product not found.");
 }
+
 $product_id = (int) $_GET['id'];
 
-// Backend API URL
+// Backend API endpoint
 $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/products/details.php?id=" . $product_id;
 
-// Fetch product details
-$response = file_get_contents($api_url);
-$product = json_decode($response, true);
+// Fetch product from backend API
+$response = @file_get_contents($api_url);
 
-if (!$product || ($product["status"] ?? "error") === "error") {
+if (!$response) {
+    die("Unable to load product details.");
+}
+
+$json = json_decode($response, true);
+
+// Ensure backend returned proper structure
+if (!isset($json["status"]) || $json["status"] !== "success") {
     die("Product not available.");
 }
 
+if (!isset($json["product"])) {
+    die("Invalid product data.");
+}
+
+$product = $json["product"];
+
+// Load navbar
 include "components/navbar.php";
 ?>
-
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?php echo $product['name']; ?></title>
+    <title><?= htmlspecialchars($product['name']) ?></title>
+
     <link rel="stylesheet" href="styles/navbar.css">
     <link rel="stylesheet" href="styles/footer.css">
     <link rel="stylesheet" href="styles/product_details.css">
@@ -34,29 +48,37 @@ include "components/navbar.php";
 
 <div class="product-page">
 
+    <!-- PRODUCT IMAGE -->
     <div class="product-image">
-        <img src="<?php echo $product['image']; ?>" alt="">
+        <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
     </div>
 
+    <!-- PRODUCT DETAILS -->
     <div class="product-details">
-        <h1><?php echo $product['name']; ?></h1>
+        <h1><?= htmlspecialchars($product['name']) ?></h1>
 
-        <p class="price">GH₵ <?php echo number_format($product['price'], 2); ?></p>
+        <p class="price">
+            GH₵ <?= number_format($product['price'], 2) ?>
+        </p>
 
-        <p><?php echo $product['description']; ?></p>
+        <p><?= nl2br(htmlspecialchars($product['description'])) ?></p>
 
+        <!-- ADD TO CART FORM -->
         <form action="actions/add_to_cart.php" method="POST">
             <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
 
             <label>Quantity:</label>
             <input type="number" name="quantity" value="1" min="1">
 
-            <button type="submit" class="btn-add">Add to Cart</button>
+            <button type="submit" class="btn-add">
+                <i class="fa fa-cart-plus"></i> Add to Cart
+            </button>
         </form>
     </div>
 
 </div>
 
 <?php include "components/footer.php"; ?>
+
 </body>
 </html>
