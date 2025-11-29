@@ -1,7 +1,22 @@
 <?php
 include "components/navbar.php";
 
-$cat_id = $_GET['cat'] ?? 0;
+// Fetch categories (used in filter dropdown)
+$cat_api = "http://169.239.251.102:442/~benson.vorsah/backend/categories/list.php";
+$cat_json = file_get_contents($cat_api);
+$cat_data = json_decode($cat_json, true);
+$categories = $cat_data["categories"] ?? [];
+
+// Accept both ?category= and ?cat=
+$cat_id = $_GET['category'] ?? $_GET['cat'] ?? 0;
+
+// Fetch products from backend
+$query_string = http_build_query([
+    "category" => $cat_id,
+    "search"   => $_GET["search"] ?? "",
+    "price_min" => $_GET["price_min"] ?? "",
+    "price_max" => $_GET["price_max"] ?? "",
+]);
 
 $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/products/list.php?category=$cat_id";
 $response = file_get_contents($api_url);
@@ -9,6 +24,9 @@ $data = json_decode($response, true);
 
 $products = $data["products"] ?? [];
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html>

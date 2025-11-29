@@ -72,7 +72,7 @@ $products = json_decode($response, true);
 $cat_api = "http://169.239.251.102:442/~benson.vorsah/backend/categories/list.php";
 $cat_json = file_get_contents($cat_api);
 $cat_data = json_decode($cat_json, true);
-$categories = $cat_data["categories"];
+$categories = $cat_data["categories"] ?? [];
 ?>
 
 <section class="categories">

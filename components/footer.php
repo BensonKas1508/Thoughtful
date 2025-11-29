@@ -44,6 +44,6 @@
     </div>
 
     <div class="copyright">
-        © <?= date("Y") ?> Thoughtful. Created by Benson KAs-Vorsah. All Rights Reserved.
+        © <?= date("Y") ?> Thoughtful. Created by Benson Kas-Vorsah. All Rights Reserved.
     </div>
 </footer>
