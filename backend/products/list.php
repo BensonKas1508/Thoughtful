@@ -10,8 +10,8 @@ $price_min   = $_GET["price_min"]   ?? null;
 $price_max   = $_GET["price_max"]   ?? null;
 $delivery    = $_GET["delivery"]    ?? null;
 
-$page  = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
-$limit = 12;
+$page   = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
+$limit  = 12;
 $offset = ($page - 1) * $limit;
 
 // Base query
@@ -28,42 +28,56 @@ $sql = "
         v.business_name,
         c.name AS category_name
     FROM products p
-    JOIN vendors v ON p.vendor_id = v.id
+    LEFT JOIN vendors v ON p.vendor_id = v.id
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.status = 'active'
 ";
 
 $params = [];
 
-// Filters
-if (!empty($search)) {
-    $sql .= " AND p.name LIKE :search";
-    $params[':search'] = '%' . $search . '%';
+// Search
+if ($search !== null && $search !== "") {
+    $sql .= " AND (p.name LIKE :search OR p.description LIKE :search)";
+    $params[':search'] = "%$search%";
 }
 
-if (!empty($category)) {
+// Category
+if ($category !== null && $category !== "") {
     $sql .= " AND p.category_id = :category";
     $params[':category'] = $category;
 }
 
-if (!empty($vendor)) {
+// Vendor
+if ($vendor !== null && $vendor !== "") {
     $sql .= " AND p.vendor_id = :vendor";
     $params[':vendor'] = $vendor;
 }
 
-if (!empty($price_min)) {
+// Price range
+if ($price_min !== null && $price_min !== "") {
     $sql .= " AND p.price >= :min";
-    $params[':min'] = $price_min;
+    $params[':min'] = (float)$price_min;
 }
 
-if (!empty($price_max)) {
+if ($price_max !== null && $price_max !== "") {
     $sql .= " AND p.price <= :max";
-    $params[':max'] = $price_max;
+    $params[':max'] = (float)$price_max;
 }
 
-if (!empty($delivery)) {
-    $sql .= " AND p.delivery_type = :delivery";
-    $params[':delivery'] = $delivery;
+// Delivery filter logic
+if ($delivery !== null && $delivery !== "") {
+
+    if ($delivery === "pickup") {
+        $sql .= " AND (p.delivery_type = 'pickup' OR p.delivery_type = 'both')";
+    }
+
+    if ($delivery === "delivery") {
+        $sql .= " AND (p.delivery_type = 'delivery' OR p.delivery_type = 'both')";
+    }
+
+    if ($delivery === "both") {
+        $sql .= " AND p.delivery_type = 'both'";
+    }
 }
 
 // Pagination
@@ -71,7 +85,7 @@ $sql .= " ORDER BY p.id DESC LIMIT :limit OFFSET :offset";
 
 $stmt = $pdo->prepare($sql);
 
-// Bind dynamic values
+// Bind dynamic user-supplied values
 foreach ($params as $key => $value) {
     $stmt->bindValue($key, $value);
 }
@@ -80,14 +94,15 @@ $stmt->bindValue(":limit", (int)$limit, PDO::PARAM_INT);
 $stmt->bindValue(":offset", (int)$offset, PDO::PARAM_INT);
 
 $stmt->execute();
-$products = $stmt->fetchAll();
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Attach product images
 foreach ($products as $key => $product) {
-    $imgQuery = $pdo->prepare("SELECT url FROM product_images WHERE product_id = ? LIMIT 1");
-    $imgQuery->execute([$product['id']]);
-    $image = $imgQuery->fetch();
-    $products[$key]["image"] = $image ? $image["url"] : null;
+    $img = $pdo->prepare("SELECT url FROM product_images WHERE product_id = ? LIMIT 1");
+    $img->execute([$product["id"]]);
+    $row = $img->fetch();
+
+    $products[$key]["image"] = $row["url"] ?? null;
 }
 
 // Response
