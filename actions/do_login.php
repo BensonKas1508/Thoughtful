@@ -28,28 +28,22 @@ $options = [
 $context = stream_context_create($options);
 $response = file_get_contents($api_url, false, $context);
 
-// If API unreachable
 if ($response === false) {
-    header("Location: ../login.php?error=Server+error.+Please+try+again.");
+    header("Location: ../login.php?error=Server+error");
     exit;
 }
 
-// Decode response
 $result = json_decode($response, true);
 
-// Debug (REMOVE IN PRODUCTION)
-file_put_contents("debug_login_response.txt", print_r($result, true));
-
-// On failure
 if (!$result || ($result["status"] ?? '') !== "success") {
-    $msg = $result["message"] ?? "Login failed. Please try again.";
+    $msg = $result["message"] ?? "Login failed";
     header("Location: ../login.php?error=" . urlencode($msg));
     exit;
 }
 
-// SUCCESS — log user in
+// SUCCESS — Set all session variables
 $_SESSION["user_id"] = $result["user"]["id"];
-$_SESSION["name"] = $result["user"]["name"];
+$_SESSION["name"] = $result["user"]["name"];  // THIS LINE IS CRITICAL
 $_SESSION["role"] = $result["user"]["role"];
 
 // Merge guest cart with user cart (if exists)
@@ -72,11 +66,9 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
         $cart_ctx = stream_context_create($cart_opts);
         @file_get_contents($cart_api, false, $cart_ctx);
     }
-    // Clear session cart after merging
     unset($_SESSION['cart']);
 }
 
-// Redirect to home
 header("Location: ../home.php");
 exit;
 ?>

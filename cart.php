@@ -1,8 +1,10 @@
 <?php
 session_start();
 
-// Temporary debug
-echo "<!-- USER ID: " . ($_SESSION['user_id'] ?? 'NOT SET') . " -->";
+// DEBUG: Check session
+echo "<pre style='background:#f0f0f0;padding:10px;'>";
+echo "USER ID: " . ($_SESSION['user_id'] ?? 'NOT SET') . "\n";
+echo "NAME: " . ($_SESSION['name'] ?? 'NOT SET') . "\n";
 
 
 // Clear cart count cache so navbar refreshes
