@@ -17,7 +17,6 @@ if (isset($_SESSION['user_id'])) {
     <link rel="stylesheet" href="styles/navbar.css">
     <link rel="stylesheet" href="styles/footer.css">
     <link rel="stylesheet" href="styles/auth.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -67,7 +66,7 @@ if (isset($_SESSION['user_id'])) {
                 </div>
             <?php endif; ?>
 
-            <form action="~benson.vorsah/actions/do_register.php" method="POST" class="auth-form">
+            <form action="actions/do_register.php" method="POST" class="auth-form" id="registerForm">
                 <input type="hidden" name="role" value="<?= $_GET['role'] ?? 'customer' ?>">
 
                 <div class="form-group">
@@ -112,12 +111,12 @@ if (isset($_SESSION['user_id'])) {
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Confirm Password</label>
+                    <label for="confirm_password">Confirm Password</label>
                     <div class="input-wrapper">
                         <svg class="input-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"/>
                         </svg>
-                        <input type="password" id="password" name="confirm_password" placeholder="Minimum 8 characters" minlength="8" required>
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Minimum 8 characters" minlength="8" required>
                     </div>
                 </div>
 
@@ -142,6 +141,26 @@ if (isset($_SESSION['user_id'])) {
 </div>
 
 <?php include "components/footer.php"; ?>
+
+<script>
+// Client-side password validation
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    
+    if (password !== confirmPassword) {
+        e.preventDefault();
+        alert('Passwords do not match!');
+        return false;
+    }
+    
+    if (password.length < 8) {
+        e.preventDefault();
+        alert('Password must be at least 8 characters long!');
+        return false;
+    }
+});
+</script>
 
 </body>
 </html>
