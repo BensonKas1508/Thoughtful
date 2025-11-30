@@ -1,6 +1,6 @@
 <?php
 header("Content-Type: application/json");
-include "../config/db.php";
+include "../config/db.php";  // This gives you $pdo
 
 $input = json_decode(file_get_contents("php://input"), true);
 
@@ -14,7 +14,8 @@ if (!$name || !$email || !$password) {
     exit;
 }
 
-$stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+// Changed $conn to $pdo
+$stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
 $stmt->execute([$email]);
 if ($stmt->rowCount() > 0) {
     echo json_encode(["status" => "error", "message" => "Email already exists"]);
@@ -23,14 +24,16 @@ if ($stmt->rowCount() > 0) {
 
 $hashed = password_hash($password, PASSWORD_BCRYPT);
 
-$insert = $conn->prepare("
+// Changed $conn to $pdo
+$insert = $pdo->prepare("
     INSERT INTO users (name, email, phone, password_hash, role)
     VALUES (?, ?, ?, ?, 'customer')
 ");
 
 $insert->execute([$name, $email, $phone, $hashed]);
 
-$user_id = $conn->lastInsertId();
+// Changed $conn to $pdo
+$user_id = $pdo->lastInsertId();
 
 echo json_encode([
     "status" => "success",

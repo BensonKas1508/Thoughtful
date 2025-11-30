@@ -10,7 +10,7 @@ $data = [
     "email" => $_POST['email'] ?? '',
     "phone" => $_POST['phone'] ?? '',
     "password" => $_POST['password'] ?? '',
-    "role" => $_POST['role'] ?? 'customer'  // Added role support
+    "role" => $_POST['role'] ?? 'customer'
 ];
 
 // Validate required fields
@@ -47,9 +47,6 @@ if ($response === false) {
 // Decode response
 $result = json_decode($response, true);
 
-// Debug: Save response to file (REMOVE IN PRODUCTION)
-file_put_contents("debug_register_response.txt", print_r($result, true));
-
 // On failure
 if (!$result || ($result["status"] ?? '') !== "success") {
     $msg = $result["message"] ?? "Registration failed. Please try again.";
@@ -58,9 +55,9 @@ if (!$result || ($result["status"] ?? '') !== "success") {
 }
 
 // SUCCESS — log user in
-$_SESSION["user_id"] = $result["user"]["id"] ?? $result["user_id"];
-$_SESSION["name"] = $result["user"]["name"] ?? $data["name"];
-$_SESSION["role"] = $result["user"]["role"] ?? 'customer';
+$_SESSION["user_id"] = $result["user"]["id"];
+$_SESSION["name"] = $result["user"]["name"];
+$_SESSION["role"] = $result["user"]["role"];
 
 // Redirect to home
 header("Location: ../home.php");

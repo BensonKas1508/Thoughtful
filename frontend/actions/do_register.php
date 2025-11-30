@@ -40,7 +40,6 @@ if ($response === false) {
 }
 
 echo "<pre>RAW RESPONSE:\n$response\n</pre>";
-exit;
 
 $result = json_decode($response, true);
 
