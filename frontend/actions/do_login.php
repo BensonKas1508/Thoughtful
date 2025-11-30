@@ -34,7 +34,7 @@ $result = json_decode($response, true);
 
 if (!$result || $result["status"] !== "success") {
     $msg = $result["message"] ?? "Login failed";
-    header("Location: ~benson.vorsah/login.php?error=" . urlencode($msg));
+    header("Location: ../../login.php?error=" . urlencode($msg));
     exit;
 }
 
