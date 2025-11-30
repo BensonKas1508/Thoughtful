@@ -34,7 +34,25 @@ if (session_status() === PHP_SESSION_NONE) {
                     <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
                 </svg>
                 <span>Cart</span>
-                <span class="cart-badge">0</span>
+                <?php 
+                // Calculate cart item count
+                $cart_count = 0;
+                if (!empty($_SESSION['user_id'])) {
+                    // For logged-in users - fetch from backend
+                    $cart_api = "http://169.239.251.102:442/~benson.vorsah/backend/cart/list.php?user_id=" . (int)$_SESSION['user_id'];
+                    $cart_resp = @file_get_contents($cart_api);
+                    if ($cart_resp) {
+                        $cart_data = json_decode($cart_resp, true);
+                        $cart_count = count($cart_data['items'] ?? []);
+                    }
+                } else {
+                    // For guests - count session cart
+                    $cart_count = count($_SESSION['cart'] ?? []);
+                }
+                ?>
+                <?php if ($cart_count > 0): ?>
+                    <span class="cart-badge"><?= $cart_count ?></span>
+                <?php endif; ?>
             </a>
 
             <?php if (isset($_SESSION['user_id'])): ?>

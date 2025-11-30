@@ -3,17 +3,16 @@ session_start();
 
 // If user not logged in → send to login page
 if (!isset($_SESSION['user_id'])) {
-    header("Location: do_login.php");
+    header("Location: ../login.php");
     exit;
 }
 
 $user_id = $_SESSION['user_id'];
-$product_id = $_POST['product_id'];
-$qty = $_POST['quantity'];
+$product_id = $_POST['product_id'] ?? 0;
+$qty = max(1, (int)($_POST['quantity'] ?? 1));
 
-// URL to backend (UPDATE USERNAME)
-$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/cart/list.php
-";
+// Correct API URL - should be add.php, not list.php
+$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/cart/add.php";
 
 $data = [
     "user_id" => $user_id,
@@ -24,15 +23,20 @@ $data = [
 // Setup request
 $options = [
     "http" => [
-        "header"  => "Content-Type: application/json",
+        "header"  => "Content-Type: application/json\r\n",
         "method"  => "POST",
-        "content" => json_encode($data)
+        "content" => json_encode($data),
+        "ignore_errors" => true
     ]
 ];
 
-// Call backend
-$response = file_get_contents($api_url, false, stream_context_create($options));
+$context = stream_context_create($options);
+$response = file_get_contents($api_url, false, $context);
 
-// Redirect to cart
-header("Location: ../cart.php");
+// Debug (remove in production)
+// file_put_contents("debug_add_to_cart.txt", $response);
+
+// Redirect to cart with success message
+header("Location: ../cart.php?msg=Item+added+to+cart");
 exit;
+?>
