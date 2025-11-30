@@ -1,5 +1,5 @@
 :root {
-      --primary: #4b2e83;
+      --primary: #7c3aed;
       --primary-light: #7A4EB5;
       --secondary: #F4EDFF;
       --accent: #9966CC;
@@ -9,8 +9,9 @@
       --border-radius: 8px;
       --shadow: 0 4px 12px rgba(153, 102, 204, 0.15);
     }
-    
     * {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
       margin: 0;
       padding: 0;
       box-sizing: border-box;

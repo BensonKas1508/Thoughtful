@@ -9,7 +9,7 @@ $data = [
 ];
 
 if (empty($data["email"]) || empty($data["password"])) {
-    header("Location: ~benson.vorsah/login.php?error=Email and password required");
+    header("Location: ../../login.php?error=Email and password required");
     exit;
 }
 
@@ -26,7 +26,7 @@ $context = stream_context_create($options);
 $response = file_get_contents($api_url, false, $context);
 
 if ($response === false) {
-    header("Location: ~benson.vorsah/login.php?error=Server unreachable");
+    header("Location: ../../login.php?error=Server unreachable");
     exit;
 }
 
@@ -61,6 +61,6 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
 $_SESSION["user_name"] = $result["user"]["name"];
 $_SESSION["role"]      = $result["user"]["role"];
 
-header("Location: ../home.php");
+header("Location: ../../home.php");
 exit;
 ?>
