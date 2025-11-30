@@ -1,4 +1,6 @@
 <?php
+
+
 include "components/navbar.php";
 
 // FETCH PRODUCTS FROM BACKEND

@@ -1,12 +1,6 @@
 <?php
 session_start();
 
-// DEBUG: Check session
-echo "<pre style='background:#f0f0f0;padding:10px;'>";
-echo "USER ID: " . ($_SESSION['user_id'] ?? 'NOT SET') . "\n";
-echo "NAME: " . ($_SESSION['name'] ?? 'NOT SET') . "\n";
-
-
 // Clear cart count cache so navbar refreshes
 unset($_SESSION['cart_count']);
 unset($_SESSION['cart_count_time']);
@@ -15,12 +9,21 @@ include "components/navbar.php";
 
 $cart_items = [];
 $total = 0.0;
-$debug_info = '';
 
 if (!empty($_SESSION['user_id'])) {
     // logged in -> fetch from backend
     $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/cart/list.php?user_id=" . (int)$_SESSION['user_id'];
-    
+    $resp = @file_get_contents($api_url);
+    if ($resp) {
+        $data = json_decode($api_url);
+        if($resp){
+            $data = json_decode($resp, true);
+            if (json_last_error() === JSON_ERROR_NONE && isset($data['items'])) {
+                $cart_items = $data['items'];
+            }
+        }
+    }
+
 $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $api_url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
