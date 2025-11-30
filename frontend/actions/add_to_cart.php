@@ -1,17 +1,17 @@
 <?php
 session_start();
 
-// get POST
+// Get POST data
 $product_id = (int) ($_POST['product_id'] ?? 0);
 $quantity = max(1, (int) ($_POST['quantity'] ?? 1));
 
-// simple validation
+// Validation
 if ($product_id <= 0) {
-    header("Location: /~benson.vorsah/home.php?error=Invalid+product");
+    header("Location: ../home.php?error=Invalid+product");
     exit;
 }
 
-// if user logged in -> call backend to add to DB
+// If user logged in -> call backend to add to DB
 if (!empty($_SESSION['user_id'])) {
     $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/cart/add.php";
 
@@ -34,17 +34,20 @@ if (!empty($_SESSION['user_id'])) {
     $response = file_get_contents($api_url, false, $context);
     $res = json_decode($response, true);
 
+    // Clear cart count cache
+    unset($_SESSION['cart_count']);
+    unset($_SESSION['cart_count_time']);
+
     $msg = $res['message'] ?? 'Added to cart';
     header("Location: ../cart.php?msg=" . urlencode($msg));
     exit;
 }
 
-// --- guest: store in session cart
+// Guest: store in session cart
 if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// key by product_id
 $key = (string)$product_id;
 
 if (isset($_SESSION['cart'][$key])) {
@@ -57,5 +60,9 @@ if (isset($_SESSION['cart'][$key])) {
     ];
 }
 
-header("Location: ../cart.php?msg=" . urlencode("Added to cart (guest)"));
+// Clear cart count cache
+unset($_SESSION['cart_count']);
+unset($_SESSION['cart_count_time']);
+
+header("Location: ../cart.php?msg=" . urlencode("Added to cart"));
 exit;
