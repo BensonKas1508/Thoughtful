@@ -1,9 +1,4 @@
 <?php
-// debugging to see errors
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 header("Content-Type: application/json");
 include "../config/db.php";
 
@@ -21,14 +16,16 @@ $stmt = $pdo->prepare("
         c.quantity,
         p.name,
         p.price as unit_price,
-        p.image,
+        pi.url as image,
         (p.price * c.quantity) as subtotal
     FROM cart_items c
     JOIN products p ON c.product_id = p.id
+    LEFT JOIN product_images pi ON p.id = pi.product_id
     WHERE c.user_id = ?
+    GROUP BY c.id
 ");
 $stmt->execute([$user_id]);
-$items = $stmt->fetchAll();
+$items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 echo json_encode([
     "status" => "success",
