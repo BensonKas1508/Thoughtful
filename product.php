@@ -64,7 +64,7 @@ include "components/navbar.php";
         <p><?= nl2br(htmlspecialchars($product['description'])) ?></p>
 
         <!-- ADD TO CART FORM -->
-        <form action="frontend/actions/add_to_cart.php" method="POST">
+        <form action="actions/add_to_cart.php" method="POST">
             <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
 
             <label>Quantity:</label>
