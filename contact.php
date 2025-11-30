@@ -15,25 +15,6 @@
 <body>
   <?php include "components/navbar.php"; ?>
 
-  <!-- Header -->
-  <header>
-    <div class="header-container">
-      <div class="logo">
-        <i class="fas fa-gift"></i>
-        Thoughtful
-      </div>
-      <nav>
-        <ul>
-          <li><a href="/home.php">Home</a></li>
-          <li><a href="/products.php">Gifts</a></li>
-          <li><a href="/occasions">Occasions</a></li>
-          <li><a href="/vendors.php">Vendors</a></li>
-          <li><a href="/contact.php" class="active">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
   <!-- Page Header -->
   <section class="page-header">
     <h1>Contact Thoughtful</h1>
@@ -60,8 +41,8 @@
         <i class="fas fa-phone"></i>
         <div class="contact-details">
           <h3>Call Us</h3>
-          <p>1-800-THOUGHT (1-800-868-4488)</p>
-          <p>Mon-Fri: 9am-6pm EST</p>
+          <p>THOUGHTFUL (+233 59-526-6261)</p>
+          <p>Mon-Fri: 9am-5pm GMT</p>
         </div>
       </div>
       
@@ -78,8 +59,8 @@
         <i class="fas fa-map-marker-alt"></i>
         <div class="contact-details">
           <h3>Visit Us</h3>
-          <p>123 Gift Avenue, Suite 500</p>
-          <p>New York, NY 10001</p>
+          <p>Ashesi University</p>
+          <p>Berekuso, Eastern Region</p>
         </div>
       </div>
     </div>
