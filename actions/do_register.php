@@ -1,52 +1,68 @@
 <?php
 session_start();
 
-// backend API URL
+// Backend register API URL
 $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/auth/register.php";
 
-// Collect form data
+// Collect form data safely
 $data = [
-    "name" => $_POST['name'],
-    "email" => $_POST['email'],
-    "phone" => $_POST['phone'],
-    "password" => $_POST['password']
+    "name" => $_POST['name'] ?? '',
+    "email" => $_POST['email'] ?? '',
+    "phone" => $_POST['phone'] ?? '',
+    "password" => $_POST['password'] ?? '',
+    "role" => $_POST['role'] ?? 'customer'  // Added role support
 ];
 
-// Send to backend
+// Validate required fields
+if (empty($data["name"]) || empty($data["email"]) || empty($data["password"])) {
+    header("Location: ../register.php?error=All fields are required");
+    exit;
+}
+
+// Validate password confirmation
+if (isset($_POST['confirm_password']) && $_POST['password'] !== $_POST['confirm_password']) {
+    header("Location: ../register.php?error=Passwords do not match");
+    exit;
+}
+
+// Send JSON to backend
 $options = [
     "http" => [
         "header"  => "Content-Type: application/json\r\n",
         "method"  => "POST",
-        "content" => json_encode($data)
+        "content" => json_encode($data),
+        "ignore_errors" => true
     ]
 ];
 
-$context  = stream_context_create($options);
+$context = stream_context_create($options);
 $response = file_get_contents($api_url, false, $context);
 
-// DEBUG OUTPUT (TEMPORARY)
-echo "<h1>DEBUG</h1>";
-echo "<pre>";
-echo "Response:\n";
-var_dump($response);
-echo "\nPOST DATA SENT:\n";
-var_dump($data);
-echo "</pre>";
+// If API unreachable
+if ($response === false) {
+    header("Location: ../register.php?error=Server error. Please try again.");
+    exit;
+}
 
+// Decode response
 $result = json_decode($response, true);
 
-// Handle response
-if (!$result || $result["status"] !== "success") {
-    $msg = isset($result["message"]) ? $result["message"] : "Registration failed.";
+// Debug: Save response to file (REMOVE IN PRODUCTION)
+file_put_contents("debug_register_response.txt", print_r($result, true));
+
+// On failure
+if (!$result || ($result["status"] ?? '') !== "success") {
+    $msg = $result["message"] ?? "Registration failed. Please try again.";
     header("Location: ../register.php?error=" . urlencode($msg));
     exit;
 }
 
-// Success → log user in
-$_SESSION["user_id"] = $result["user"]["id"];
-$_SESSION["user_name"] = $result["user"]["name"];
-$_SESSION["role"] = $result["user"]["role"];
+// SUCCESS — log user in
+$_SESSION["user_id"] = $result["user"]["id"] ?? $result["user_id"];
+$_SESSION["name"] = $result["user"]["name"] ?? $data["name"];
+$_SESSION["role"] = $result["user"]["role"] ?? 'customer';
 
-// Redirect to homepage
+// Redirect to home
 header("Location: ../home.php");
 exit;
+?>
