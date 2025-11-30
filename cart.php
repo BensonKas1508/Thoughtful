@@ -9,17 +9,27 @@ include "components/navbar.php";
 
 $cart_items = [];
 $total = 0.0;
+$debug_info = '';
 
 if (!empty($_SESSION['user_id'])) {
     // logged in -> fetch from backend
     $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/cart/list.php?user_id=" . (int)$_SESSION['user_id'];
+    
     $resp = file_get_contents($api_url);
     
-    //DEBUG: See what we're getting
-    file_put_contents('debug_cart_response.txt', $resp);
-    
-    $data = json_decode($resp, true);
-    $cart_items = $data['items'] ?? [];
+    if ($resp === false) {
+        $debug_info = "Failed to connect to backend API";
+    } else {
+        $data = json_decode($resp, true);
+        
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $debug_info = "JSON decode error: " . json_last_error_msg() . " | Response: " . substr($resp, 0, 200);
+        } else if (!isset($data['items'])) {
+            $debug_info = "No 'items' key in response. Keys: " . implode(', ', array_keys($data));
+        } else {
+            $cart_items = $data['items'];
+        }
+    }
 } else {
     // guest -> session cart -> we must enrich with product details
     $session_cart = $_SESSION['cart'] ?? [];
@@ -28,24 +38,27 @@ if (!empty($_SESSION['user_id'])) {
         $pid = (int)$entry['product_id'];
         $prod_api = "http://169.239.251.102:442/~benson.vorsah/backend/products/details.php?id={$pid}";
         $prod_resp = @file_get_contents($prod_api);
-        $prod = $prod_resp ? json_decode($prod_resp, true) : null;
+        $prod_data = $prod_resp ? json_decode($prod_resp, true) : null;
+        
+        if ($prod_data && isset($prod_data['product'])) {
+            $prod = $prod_data['product'];
+            $price = $prod['price'] ?? 0;
+            $name = $prod['name'] ?? 'Product';
+            $image = $prod['image'] ?? '';
 
-        $price = $prod['price'] ?? 0;
-        $name = $prod['name'] ?? 'Product';
-        $image = $prod['image'] ?? '';
+            $subtotal = $price * $entry['quantity'];
+            $total += $subtotal;
 
-        $subtotal = $price * $entry['quantity'];
-        $total += $subtotal;
-
-        $cart_items[] = [
-            'cart_item_id' => 's-'.$pid,
-            'product_id' => $pid,
-            'name' => $name,
-            'image' => $image,
-            'unit_price' => $price,
-            'quantity' => $entry['quantity'],
-            'subtotal' => $subtotal
-        ];
+            $cart_items[] = [
+                'cart_item_id' => 's-'.$pid,
+                'product_id' => $pid,
+                'name' => $name,
+                'image' => $image,
+                'unit_price' => $price,
+                'quantity' => $entry['quantity'],
+                'subtotal' => $subtotal
+            ];
+        }
     }
 }
 
@@ -79,6 +92,12 @@ if (!empty($_SESSION['user_id'])) {
 <!-- Cart Content -->
 <section class="cart-section">
     <div class="cart-container">
+
+        <?php if ($debug_info): ?>
+            <div class="alert alert-danger" style="background: #fee; border: 1px solid #fcc; padding: 15px; margin: 20px 0; border-radius: 8px; color: #c00;">
+                <strong>Debug Info:</strong> <?= htmlspecialchars($debug_info) ?>
+            </div>
+        <?php endif; ?>
 
         <?php if (!empty($_GET['msg'])): ?>
             <div class="alert alert-success">
