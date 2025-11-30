@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+// Temporary debug
+echo "<!-- USER ID: " . ($_SESSION['user_id'] ?? 'NOT SET') . " -->";
+
+
 // Clear cart count cache so navbar refreshes
 unset($_SESSION['cart_count']);
 unset($_SESSION['cart_count_time']);
