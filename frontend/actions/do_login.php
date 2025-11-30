@@ -9,7 +9,7 @@ $data = [
 ];
 
 if (empty($data["email"]) || empty($data["password"])) {
-    header("Location: ../login.php?error=Email and password required");
+    header("Location: ~benson.vorsah/login.php?error=Email and password required");
     exit;
 }
 
@@ -26,7 +26,7 @@ $context = stream_context_create($options);
 $response = file_get_contents($api_url, false, $context);
 
 if ($response === false) {
-    header("Location: ../login.php?error=Server unreachable");
+    header("Location: ~benson.vorsah/login.php?error=Server unreachable");
     exit;
 }
 
@@ -34,7 +34,7 @@ $result = json_decode($response, true);
 
 if (!$result || $result["status"] !== "success") {
     $msg = $result["message"] ?? "Login failed";
-    header("Location: ../login.php?error=" . urlencode($msg));
+    header("Location: ~benson.vorsah/login.php?error=" . urlencode($msg));
     exit;
 }
 
