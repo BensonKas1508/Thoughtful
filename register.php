@@ -67,7 +67,7 @@ if (isset($_SESSION['user_id'])) {
                 </div>
             <?php endif; ?>
 
-            <form action="/../~benson.vorsah/frontend/actions/do_register.php" method="POST" class="auth-form">
+            <form action="~benson.vorsah/actions/do_register.php" method="POST" class="auth-form">
                 <input type="hidden" name="role" value="<?= $_GET['role'] ?? 'customer' ?>">
 
                 <div class="form-group">
