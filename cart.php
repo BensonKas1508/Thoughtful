@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+// Clear cart count cache so navbar refreshes
+unset($_SESSION['cart_count']);
+unset($_SESSION['cart_count_time']);
+
 include "components/navbar.php";
 
 $cart_items = [];

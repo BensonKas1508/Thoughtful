@@ -35,9 +35,12 @@ if (session_status() === PHP_SESSION_NONE) {
                 </svg>
                 <span>Cart</span>
                 <?php 
-                // Calculate cart item count
+                // Calculate cart item count (cached in session)
                 $cart_count = 0;
-                if (!empty($_SESSION['user_id'])) {
+
+                // only fetch cart count if not already in session or if it's been more than 30 seconds
+                if (!isset($_SESSION['cart_count']) || !isset($_SESSION['cart_count_time']) || (time() - $_SESSION['cart_count_time']) > 30) {
+                    if (!empty($_SESSION['user_id'])) {
                     // For logged-in users - fetch from backend
                     $cart_api = "http://169.239.251.102:442/~benson.vorsah/backend/cart/list.php?user_id=" . (int)$_SESSION['user_id'];
                     $cart_resp = @file_get_contents($cart_api);
@@ -49,11 +52,18 @@ if (session_status() === PHP_SESSION_NONE) {
                     // For guests - count session cart
                     $cart_count = count($_SESSION['cart'] ?? []);
                 }
-                ?>
-                <?php if ($cart_count > 0): ?>
-                    <span class="cart-badge"><?= $cart_count ?></span>
-                <?php endif; ?>
-            </a>
+
+                // Cache the count
+                $_SESSION['cart_count'] = $cart_count;
+                $_SESSION['cart_count_time'] = time();
+            } else {
+                $cart_count = $_SESSION['cart_count'];
+            }
+            ?>
+            <?php if ($cart_count > 0): ?>
+                <span class="cart-badge"><?= $cart_count ?></span>
+            <?php endif; ?>
+        </a>
 
             <?php if (isset($_SESSION['user_id'])): ?>
                 <div class="user-menu">

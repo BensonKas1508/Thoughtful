@@ -11,7 +11,13 @@ $user_id = $_SESSION['user_id'];
 $product_id = $_POST['product_id'] ?? 0;
 $qty = max(1, (int)($_POST['quantity'] ?? 1));
 
-// Correct API URL - should be add.php, not list.php
+// Validate
+if (!$product_id) {
+    header("Location: ../cart.php?error=Invalid+product");
+    exit;
+}
+
+// Correct API URL
 $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/cart/add.php";
 
 $data = [
@@ -33,10 +39,23 @@ $options = [
 $context = stream_context_create($options);
 $response = file_get_contents($api_url, false, $context);
 
-// Debug (remove in production)
-// file_put_contents("debug_add_to_cart.txt", $response);
+// Debug: Save response
+file_put_contents("debug_add_cart_response.txt", "REQUEST: " . json_encode($data) . "\n\nRESPONSE: " . $response);
 
-// Redirect to cart with success message
-header("Location: ../cart.php?msg=Item+added+to+cart");
+// Check if response is valid
+if ($response === false) {
+    header("Location: ../cart.php?error=Server+error");
+    exit;
+}
+
+$result = json_decode($response, true);
+
+// Check if addition was successful
+if (isset($result['status']) && $result['status'] === 'success') {
+    header("Location: ../cart.php?msg=Item+added+to+cart");
+} else {
+    $error_msg = $result['message'] ?? 'Failed+to+add+item';
+    header("Location: ../cart.php?error=" . urlencode($error_msg));
+}
 exit;
 ?>
