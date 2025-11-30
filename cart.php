@@ -14,6 +14,10 @@ if (!empty($_SESSION['user_id'])) {
     // logged in -> fetch from backend
     $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/cart/list.php?user_id=" . (int)$_SESSION['user_id'];
     $resp = file_get_contents($api_url);
+    
+    //DEBUG: See what we're getting
+    file_put_contents('debug_cart_response.txt', $resp);
+    
     $data = json_decode($resp, true);
     $cart_items = $data['items'] ?? [];
 } else {
