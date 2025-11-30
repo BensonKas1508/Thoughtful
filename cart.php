@@ -19,8 +19,14 @@ if (!empty($_SESSION['user_id'])) {
     // logged in -> fetch from backend
     $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/cart/list.php?user_id=" . (int)$_SESSION['user_id'];
     
-    $resp = file_get_contents($api_url);
-    
+$ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    $resp = curl_exec($ch);
+    $curl_error = curl_error($ch);
+    curl_close($ch);
+        
     if ($resp === false) {
         $debug_info = "Failed to connect to backend API";
     } else {

@@ -28,6 +28,6 @@ if ($result["status"] === "success") {
     $_SESSION['role'] = $result['user']['role'];
     header("Location: home.php");
 } else {
-    header("Location: login.php?error=" . urlencode($result["message"]));
+    header("Location: ../login.php?error=" . urlencode($result["message"]));
 }
 exit;
