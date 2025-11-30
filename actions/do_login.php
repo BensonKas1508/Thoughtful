@@ -37,9 +37,6 @@ if ($response === false) {
 // Decode response
 $result = json_decode($response, true);
 
-// Debug (REMOVE IN PRODUCTION)
-file_put_contents("debug_login_response.txt", print_r($result, true));
-
 // On failure
 if (!$result || ($result["status"] ?? '') !== "success") {
     $msg = $result["message"] ?? "Login failed. Please try again.";
@@ -50,6 +47,7 @@ if (!$result || ($result["status"] ?? '') !== "success") {
 // SUCCESS — log user in
 $_SESSION["user_id"] = $result["user"]["id"];
 $_SESSION["name"] = $result["user"]["name"];
+$_SESSION["email"] = $result["user"]["email"] ?? $data["email"];
 $_SESSION["role"] = $result["user"]["role"];
 
 // Merge guest cart with user cart (if exists)
@@ -76,7 +74,11 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
     unset($_SESSION['cart']);
 }
 
-// Redirect to home
-header("Location: ../home.php");
+// Redirect based on role
+if ($_SESSION['role'] === 'admin') {
+    header("Location: ../admin/dashboard.php");
+} else {
+    header("Location: ../home.php");
+}
 exit;
 ?>
