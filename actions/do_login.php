@@ -46,7 +46,7 @@ if (!$result || ($result["status"] ?? '') !== "success") {
 
 // SUCCESS — log user in
 $_SESSION["user_id"] = $result["user"]["id"];
-$_SESSION["name"] = $result["user"]["name"];
+$_SESSION["user_name"] = $result["user"]["name"];
 $_SESSION["email"] = $result["user"]["email"] ?? $data["email"];
 $_SESSION["role"] = $result["user"]["role"];
 
