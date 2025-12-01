@@ -1,23 +1,21 @@
 <?php
-require_once "../../config/db.php";
-require_once "../../helpers/response.php";
-require_once "../auth_check.php";
+header("Content-Type: application/json");
+include "../../config/db.php";
 
-$admin_id = $_POST["admin_id"] ?? null;
-$product_id = $_POST["product_id"] ?? null;
-$status = $_POST["status"] ?? null;  // "active" or "inactive"
+$input = json_decode(file_get_contents("php://input"), true);
+$product_id = $input['product_id'] ?? null;
 
-requireAdmin($pdo, $admin_id);
-
-if (!$product_id || !$status) {
-    jsonResponse(["status" => "error", "message" => "Missing required fields"], 400);
+if ($product_id) {
+    // Delete product images first
+    $stmt = $pdo->prepare("DELETE FROM product_images WHERE product_id = ?");
+    $stmt->execute([$product_id]);
+    
+    // Delete product
+    $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
+    $stmt->execute([$product_id]);
+    
+    echo json_encode(["status" => "success", "message" => "Product deleted"]);
+} else {
+    echo json_encode(["status" => "error", "message" => "Product ID required"]);
 }
-
-$stmt = $pdo->prepare("UPDATE products SET status = ? WHERE id = ?");
-$stmt->execute([$status, $product_id]);
-
-jsonResponse([
-    "status" => "success",
-    "message" => "Product status updated successfully"
-]);
 ?>
