@@ -1,5 +1,11 @@
 <?php
+session_start();
 
+echo "<pre>";
+echo "Session after login:\n";
+print_r($_SESSION);
+echo "</pre>";
+die();
 
 include "components/navbar.php";
 

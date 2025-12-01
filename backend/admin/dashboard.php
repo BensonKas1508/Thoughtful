@@ -3,6 +3,8 @@ require_once "../config/db.php";
 require_once "../helpers/response.php";
 require_once "auth_check.php";
 
+include "components/navbar.php";
+
 // Get admin ID from request (in real world this comes from session or token)
 $admin_id = $_POST["admin_id"] ?? null;
 
