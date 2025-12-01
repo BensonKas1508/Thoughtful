@@ -1,28 +1,20 @@
 <?php
-require_once "../../config/db.php";
-require_once "../../helpers/response.php";
-require_once "../auth_check.php";
-
-$admin_id = $_POST["admin_id"] ?? null;
-requireAdmin($pdo, $admin_id);
+header("Content-Type: application/json");
+include "../../config/db.php";
 
 $stmt = $pdo->query("
     SELECT 
-        o.id,
-        o.total_amount,
-        o.payment_method,
-        o.payment_status,
-        o.order_status,
-        o.created_at,
-        u.name AS customer_name,
-        u.email AS customer_email
+        o.*,
+        u.name as customer_name,
+        u.email as customer_email
     FROM orders o
-    LEFT JOIN users u ON u.id = o.user_id
+    JOIN users u ON o.user_id = u.id
     ORDER BY o.created_at DESC
 ");
+$orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-jsonResponse([
+echo json_encode([
     "status" => "success",
-    "orders" => $stmt->fetchAll()
+    "orders" => $orders
 ]);
 ?>
