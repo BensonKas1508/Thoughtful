@@ -1,45 +1,92 @@
 <?php
-header("Content-Type: application/json");
-include "../config/db.php";
+require_once "../config/db.php";
+require_once "../helpers/response.php";
 
-$product_id = $_GET["id"] ?? null;
-
-if (!$product_id) {
-    echo json_encode(["status" => "error", "message" => "Product ID required"]);
-    exit;
+// Validate product ID
+if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
+    jsonResponse(["status" => "error", "message" => "Product ID is required"], 400);
 }
 
-try {
-    $stmt = $pdo->prepare("
+$product_id = (int) $_GET["id"];
+$include_reviews = isset($_GET["with_reviews"]) && $_GET["with_reviews"] == "1";
+
+// 1. Fetch main product details
+$sql = "
+    SELECT 
+        p.id,
+        p.name,
+        p.description,
+        p.price,
+        p.stock,
+        p.status,
+        p.delivery_type,
+        p.created_at,
+        
+        v.id AS vendor_id,
+        v.business_name AS vendor_name,
+        v.address AS vendor_address,
+        
+        c.name AS category_name
+    FROM products p
+    JOIN vendors v ON p.vendor_id = v.id
+    LEFT JOIN categories c ON p.category_id = c.id
+    WHERE p.id = :id
+    LIMIT 1
+";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute([":id" => $product_id]);
+$product = $stmt->fetch();
+
+if (!$product) {
+    jsonResponse(["status" => "error", "message" => "Product not found"], 404);
+}
+
+// 2. Fetch product images
+$imgQuery = $pdo->prepare("SELECT url FROM product_images WHERE product_id = ?");
+$imgQuery->execute([$product_id]);
+$images = $imgQuery->fetchAll();
+
+// 3. Average rating
+$ratingQuery = $pdo->prepare("
+    SELECT 
+        ROUND(AVG(rating), 1) AS avg_rating,
+        COUNT(*) AS total_reviews
+    FROM reviews
+    WHERE product_id = ?
+");
+$ratingQuery->execute([$product_id]);
+$ratingData = $ratingQuery->fetch();
+
+$product["avg_rating"] = $ratingData["avg_rating"] ?? 0;
+$product["total_reviews"] = $ratingData["total_reviews"] ?? 0;
+
+// 4. Fetch reviews (optional)
+$reviews = [];
+
+if ($include_reviews) {
+    $reviewQuery = $pdo->prepare("
         SELECT 
-            p.*,
-            COALESCE(pi.url, 'https://via.placeholder.com/500') as image
-        FROM products p
-        LEFT JOIN (
-            SELECT product_id, url 
-            FROM product_images 
-            WHERE id IN (
-                SELECT MIN(id) 
-                FROM product_images 
-                GROUP BY product_id
-            )
-        ) pi ON p.id = pi.product_id
-        WHERE p.id = ?
+            r.id,
+            r.rating,
+            r.comment,
+            r.created_at,
+            u.name AS customer_name
+        FROM reviews r
+        JOIN users u ON r.user_id = u.id
+        WHERE r.product_id = ?
+        ORDER BY r.created_at DESC
     ");
     
-    $stmt->execute([$product_id]);
-    $product = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$product) {
-        echo json_encode(["status" => "error", "message" => "Product not found"]);
-        exit;
-    }
-
-    echo json_encode($product);
-} catch (Exception $e) {
-    echo json_encode([
-        "status" => "error", 
-        "message" => "Database error: " . $e->getMessage()
-    ]);
+    $reviewQuery->execute([$product_id]);
+    $reviews = $reviewQuery->fetchAll();
 }
+
+// 5. Final response
+jsonResponse([
+    "status" => "success",
+    "product" => $product,
+    "images" => $images,
+    "reviews" => $reviews
+]);
 ?>
