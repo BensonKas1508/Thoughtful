@@ -17,10 +17,11 @@ try {
             c.quantity,
             p.name,
             p.price as unit_price,
-            p.image,
+            COALESCE(pi.url, '') as image,
             (p.price * c.quantity) as subtotal
         FROM cart_items c
         JOIN products p ON c.product_id = p.id
+        LEFT JOIN product_images pi ON p.id = pi.product_id AND pi.is_primary = 1
         WHERE c.user_id = ?
     ");
     $stmt->execute([$user_id]);
