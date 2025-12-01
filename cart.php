@@ -7,23 +7,6 @@ unset($_SESSION['cart_count_time']);
 
 include "components/navbar.php";
 
-// DEBUG: Test the cart API
-if (!empty($_SESSION['user_id'])) {
-    $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/cart/list.php?user_id=" . (int)$_SESSION['user_id'];
-    
-    echo "<pre style='background:#fff3cd;padding:20px;margin:20px;border:2px solid #856404;'>";
-    echo "API URL: " . $api_url . "\n\n";
-    
-    $resp = @file_get_contents($api_url);
-    echo "RAW RESPONSE:\n" . htmlspecialchars($resp) . "\n\n";
-    
-    $data = json_decode($resp, true);
-    echo "JSON ERROR: " . json_last_error_msg() . "\n\n";
-    echo "DECODED DATA:\n";
-    print_r($data);
-    echo "</pre>";
-}
-
 $cart_items = [];
 $total = 0.0;
 
