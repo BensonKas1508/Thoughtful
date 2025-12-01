@@ -13,13 +13,14 @@
 
 /* Sidebar */
 .admin-sidebar {
-    background: #1a1a1a;
+    background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
     width: 280px;
     position: fixed;
     height: 100vh;
     overflow-y: auto;
     z-index: 1000;
     transition: transform 0.3s ease;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
 }
 
 .admin-sidebar::-webkit-scrollbar {
@@ -27,12 +28,16 @@
 }
 
 .admin-sidebar::-webkit-scrollbar-track {
-    background: #2a2a2a;
+    background: #0f0f0f;
 }
 
 .admin-sidebar::-webkit-scrollbar-thumb {
-    background: #4a4a4a;
+    background: #9b87f5;
     border-radius: 3px;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #7c3aed;
 }
 
 .sidebar-overlay {
@@ -51,8 +56,9 @@
 }
 
 .sidebar-header {
-    padding: 28px 24px;
-    border-bottom: 1px solid #2a2a2a;
+    padding: 32px 24px;
+    border-bottom: 1px solid rgba(155, 135, 245, 0.1);
+    background: rgba(155, 135, 245, 0.05);
 }
 
 .sidebar-header .logo {
@@ -64,15 +70,16 @@
 }
 
 .sidebar-header .logo img {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 2px solid #9b87f5;
 }
 
 .sidebar-header .logo span {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #9b87f5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #9b87f5 0%, #d8b4fe 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -88,7 +95,7 @@
     gap: 14px;
     padding: 14px 18px;
     border-radius: 12px;
-    color: #9ca3af;
+    color: #d1d5db;
     text-decoration: none;
     transition: all 0.2s;
     margin-bottom: 6px;
@@ -97,14 +104,15 @@
 }
 
 .nav-item:hover {
-    background: rgba(155, 135, 245, 0.1);
-    color: #9b87f5;
+    background: rgba(155, 135, 245, 0.15);
+    color: #e9d5ff;
+    transform: translateX(4px);
 }
 
 .nav-item.active {
     background: linear-gradient(135deg, #9b87f5 0%, #7c3aed 100%);
     color: white;
-    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    box-shadow: 0 4px 12px rgba(155, 135, 245, 0.4);
 }
 
 .nav-item svg {
@@ -113,16 +121,17 @@
 }
 
 .nav-item.logout {
-    color: #ef4444;
+    color: #fca5a5;
 }
 
 .nav-item.logout:hover {
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(239, 68, 68, 0.15);
+    color: #fecaca;
 }
 
 .nav-divider {
     height: 1px;
-    background: #2a2a2a;
+    background: rgba(155, 135, 245, 0.1);
     margin: 20px 0;
 }
 
