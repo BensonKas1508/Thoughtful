@@ -1,35 +1,21 @@
 <?php
-// Validate product ID
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+// Get product ID from URL
+if (!isset($_GET['id'])) {
     die("Product not found.");
 }
-
 $product_id = (int) $_GET['id'];
 
-// Backend API endpoint
+// Backend API URL for product details
 $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/products/details.php?id=" . $product_id;
 
-// Fetch product from backend API
-$response = @file_get_contents($api_url);
+// Fetch product details
+$response = file_get_contents($api_url);
+$product = json_decode($response, true);
 
-if (!$response) {
-    die("Unable to load product details.");
-}
-
-$json = json_decode($response, true);
-
-// Ensure backend returned proper structure
-if (!isset($json["status"]) || $json["status"] !== "success") {
+if (!$product || ($product["status"] ?? "error") === "error") {
     die("Product not available.");
 }
 
-if (!isset($json["product"])) {
-    die("Invalid product data.");
-}
-
-$product = $json["product"];
-
-// Load navbar
 include "components/navbar.php";
 ?>
 
