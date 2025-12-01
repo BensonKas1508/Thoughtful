@@ -1,36 +1,34 @@
 <?php
 session_start();
 
-// Check if admin is logged in
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+// Check if vendor is logged in
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'vendor') {
     header("Location: ../login.php");
     exit;
 }
 
-include "components/admin_header.php";
+$vendor_id = $_SESSION['user_id'];
 
-// Fetch analytics from backend
-$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/admin/analytics.php";
+// Fetch vendor analytics
+$api_url = "http://169.239.251.102:442/~benson.vorsah/backend/vendor/analytics.php?vendor_id=" . $vendor_id;
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $api_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 $resp = curl_exec($ch);
 curl_close($ch);
 
 $analytics = [
-    'total_users' => 0,
+    'total_products' => 0,
     'total_orders' => 0,
     'total_revenue' => 0,
-    'total_products' => 0,
     'pending_orders' => 0,
     'monthly_revenue' => []
 ];
 
 if ($resp) {
     $data = json_decode($resp, true);
-    if ($data['status'] === 'success') {
+    if (isset($data['analytics'])) {
         $analytics = array_merge($analytics, $data['analytics']);
     }
 }
@@ -39,7 +37,7 @@ if ($resp) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard - Thoughtful</title>
+    <title>Vendor Dashboard - Thoughtful</title>
     <link rel="stylesheet" href="../styles/global.css">
     <link rel="stylesheet" href="../styles/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -52,7 +50,7 @@ if ($resp) {
 
 <div class="admin-container">
     
-    <?php include "components/admin_sidebar.php"; ?>
+    <?php include "components/vendor_sidebar.php"; ?>
 
     <main class="admin-main">
         
@@ -61,7 +59,7 @@ if ($resp) {
             <button class="mobile-menu-btn" onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
             </button>
-            <h1>Dashboard</h1>
+            <h1>Vendor Dashboard</h1>
             <div class="admin-user-info">
                 <span>Welcome back, <strong><?= htmlspecialchars($_SESSION['name']) ?></strong></span>
                 <div class="user-avatar">
@@ -75,12 +73,12 @@ if ($resp) {
             <div class="stat-card">
                 <div class="stat-icon" style="background: #dbeafe;">
                     <svg width="32" height="32" viewBox="0 0 20 20" fill="#1e40af">
-                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+                        <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"/>
                     </svg>
                 </div>
                 <div class="stat-info">
-                    <p class="stat-label">Total Users</p>
-                    <p class="stat-value"><?= number_format($analytics['total_users']) ?></p>
+                    <p class="stat-label">My Products</p>
+                    <p class="stat-value"><?= number_format($analytics['total_products']) ?></p>
                 </div>
             </div>
 
@@ -112,17 +110,17 @@ if ($resp) {
             <div class="stat-card">
                 <div class="stat-icon" style="background: #e0e7ff;">
                     <svg width="32" height="32" viewBox="0 0 20 20" fill="#4338ca">
-                        <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"/>
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"/>
                     </svg>
                 </div>
                 <div class="stat-info">
-                    <p class="stat-label">Total Products</p>
-                    <p class="stat-value"><?= number_format($analytics['total_products']) ?></p>
+                    <p class="stat-label">Pending Orders</p>
+                    <p class="stat-value"><?= number_format($analytics['pending_orders']) ?></p>
                 </div>
             </div>
         </div>
 
-        <!-- Charts and Recent Activity -->
+        <!-- Charts and Quick Actions -->
         <div class="dashboard-grid">
             
             <!-- Revenue Chart -->
@@ -133,52 +131,25 @@ if ($resp) {
                 </div>
             </div>
 
-            <!-- Recent Orders -->
+            <!-- Quick Actions -->
             <div class="dashboard-card">
-                <div class="card-header">
-                    <h2>Pending Orders</h2>
-                    <a href="orders.php" class="view-all">View All</a>
-                </div>
-                <div class="pending-orders-count">
-                    <p class="pending-number"><?= $analytics['pending_orders'] ?></p>
-                    <p class="pending-label">Orders need attention</p>
+                <h2>Quick Actions</h2>
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+                    <a href="products.php" class="action-btn">
+                        <i class="fas fa-box"></i>
+                        <span>Manage Products</span>
+                    </a>
+                    <a href="orders.php" class="action-btn">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>View Orders</span>
+                    </a>
+                    <a href="products.php#add" class="action-btn" style="background: linear-gradient(135deg, #9b87f5 0%, #7c3aed 100%); color: white;">
+                        <i class="fas fa-plus"></i>
+                        <span>Add New Product</span>
+                    </a>
                 </div>
             </div>
 
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            <h2>Quick Actions</h2>
-            <div class="actions-grid">
-                <a href="users.php" class="action-card">
-                    <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                    </svg>
-                    <span>Manage Users</span>
-                </a>
-                
-                <a href="products.php" class="action-card">
-                    <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"/>
-                    </svg>
-                    <span>Manage Products</span>
-                </a>
-                
-                <a href="categories.php" class="action-card">
-                    <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
-                    </svg>
-                    <span>Manage Categories</span>
-                </a>
-                
-                <a href="orders.php" class="action-card">
-                    <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"/>
-                    </svg>
-                    <span>Manage Orders</span>
-                </a>
-            </div>
         </div>
 
     </main>
@@ -198,17 +169,16 @@ const months = monthlyData.map(item => item.month);
 const revenue = monthlyData.map(item => parseFloat(item.revenue));
 
 new Chart(ctx, {
-    type: 'line',
+    type: 'bar',
     data: {
         labels: months,
         datasets: [{
             label: 'Revenue (GH₵)',
             data: revenue,
+            backgroundColor: 'rgba(124, 58, 237, 0.8)',
             borderColor: '#7c3aed',
-            backgroundColor: 'rgba(124, 58, 237, 0.1)',
-            tension: 0.4,
-            fill: true,
-            borderWidth: 3
+            borderWidth: 2,
+            borderRadius: 8
         }]
     },
     options: {
@@ -221,13 +191,6 @@ new Chart(ctx, {
             tooltip: {
                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
                 padding: 12,
-                titleFont: {
-                    size: 14,
-                    weight: 'bold'
-                },
-                bodyFont: {
-                    size: 13
-                },
                 callbacks: {
                     label: function(context) {
                         return 'Revenue: GH₵ ' + context.parsed.y.toLocaleString();
@@ -256,6 +219,30 @@ new Chart(ctx, {
     }
 });
 </script>
+
+<style>
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: #f9fafb;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #4b5563;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    transform: translateX(4px);
+    background: #f3f4f6;
+}
+
+.action-btn i {
+    font-size: 1.2rem;
+}
+</style>
 
 </body>
 </html>

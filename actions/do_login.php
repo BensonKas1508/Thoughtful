@@ -77,6 +77,8 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
 // Redirect based on role
 if ($_SESSION['role'] === 'admin') {
     header("Location: ../admin/dashboard.php");
+} elseif ($_SESSION['role'] === 'vendor') {
+    header("Location: ../vendor/dashboard.php");
 } else {
     header("Location: ../home.php");
 }
