@@ -11,7 +11,7 @@ $api_url = "http://169.239.251.102:442/~benson.vorsah/backend/products/details.p
 
 // Fetch product from backend API
 $response = @file_get_contents($api_url);
-$product = json_decode($response, true)
+$product = json_decode($response, true);
 
 if (!$response) {
     die("Unable to load product details.");
